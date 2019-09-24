@@ -15,8 +15,8 @@ export default class Router extends React.Component {
 	render() {
 		return (
 			<div className='item-catalog-wrapper'>
-				<Header/>
 				<BrowserRouter>
+					<Header/>
 					<Switch>
 						<Route path='/category/:id/edit' component={CategoryEdit}/>
 						<Route path='/category/:id/delete' component={CategoryDelete}/>

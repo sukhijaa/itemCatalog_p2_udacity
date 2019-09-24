@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import './Header.scss';
 import {LoginActionTypes} from '../../reducers/LoginReducer';
+import {Link} from 'react-router-dom';
 
 @connect((store) => ({
 	isLoggedIn: store.loginData.isLoggedIn,
@@ -46,7 +47,7 @@ export default class Header extends React.Component {
     	return (
     		<div className='header-wrapper'>
     			<div className='header-label'>
-					ItemCatalog - Stuff about Stuff
+					<Link to={'/'}>ItemCatalog - Stuff about Stuff</Link>
     			</div>
     			<div className='header-login-title'>
     				{
@@ -60,8 +61,8 @@ export default class Header extends React.Component {
     									<div className='header-login-dd-wrapper' ref={ref => this.headerLoginRef = ref}>
     										<div className='login-dd-tip-triangle'/>
     										<div className='login-dd-content-wrapper'>
-    											<div className='login-dd-list-item'>Add Restaurant</div>
-    											<div className='login-dd-list-item'>Logout</div>
+												<Link to={'/category/new'} className='login-dd-list-item'>Add Category</Link>
+    											<div className='login-dd-list-item' onClick={this.logUserOut}>Logout</div>
     										</div>
     									</div> : null
     							}
