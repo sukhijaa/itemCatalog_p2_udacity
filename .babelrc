@@ -7,7 +7,9 @@
       "module-resolver",
       {
         "alias": {
-          "reducers": "./src/reducers"
+          "reducers": "./src/reducers",
+          "actions": "./src/actions",
+          "store": "./src/store.js"
         }
       }
     ]

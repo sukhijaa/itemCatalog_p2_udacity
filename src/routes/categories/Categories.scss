@@ -1,0 +1,26 @@
+.category-detail-wrapper {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+  box-shadow: 0px 0px 10px 5px #43464B40;
+  margin: 10px 0;
+  .category-expandable-icon {
+    width: 20px;
+  }
+  .category-name {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .category-short-description {
+    font-size: 12px;
+    color: darkgray;
+    flex-grow: 100;
+  }
+  .category-item-edit-link {
+    width: 50px;
+  }
+  .category-item-delete-link {
+    width: 50px;
+  }
+}
