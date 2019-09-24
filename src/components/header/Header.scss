@@ -1,5 +1,56 @@
 .header-wrapper {
-  width: 100%;
-  height: 150px;
-  border: 1px solid red;
+  flex-grow: 100;
+  background-color: #43464B;
+  color: white;
+  padding: 20px;
+  display: flex;
+  .header-label {
+    flex-grow: 100;
+    font-size: 18px;
+  }
+  .header-login-title {
+    display: flex;
+    justify-content: flex-end;
+    width: 200px;
+    .header-login-dropdown {
+      .header-login-dd-wrapper {
+        height: 100px;
+        width: 200px;
+        position: absolute;
+        right: 30px;
+        .login-dd-tip-triangle {
+          width: 20px;
+          height: 20px;
+          transform: rotate(45deg);
+          background-color: white;
+          position: absolute;
+          right: 10px;
+          border: 1px solid #43464B;
+          z-index: 2;
+          border-width: 1px 0 0 1px;
+      }
+        .login-dd-content-wrapper {
+          border: 1px solid #43464B;
+          border-radius: 5px;
+          position: absolute;
+          top: 10px;
+          width: 100%;
+          background-color: white;
+          color: black;
+          .login-dd-list-item {
+            height: 45px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-bottom: 1px solid #43464B;
+          }
+        }
+      }
+    }
+  }
+}
+.cursor-pointer {
+  cursor: pointer;
 }

@@ -5,6 +5,7 @@ export const LoginActionTypes = {
 
 const defaultState = {
 	isLoggedIn: false,
+	userName: 'Dummy',
 };
 
 export default (state = defaultState, action = {}) => {
@@ -12,7 +13,7 @@ export default (state = defaultState, action = {}) => {
 		case LoginActionTypes.LOG_USER_IN:
 			return {...state, isLoggedIn: true};
 		case LoginActionTypes.LOG_USER_OUT:
-			return {...state, isLoggedIn: false};
+			return {...defaultState};
 		default:
 			return state;
 	}
