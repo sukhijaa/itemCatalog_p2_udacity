@@ -55,7 +55,7 @@ export default (state = {}, action = {}) => {
             const catalogItems = {...selectedCat.catalogItems};
             delete catalogItems[itemId];
             selectedCat = {...selectedCat, catalogItems};
-            const allCategories = {...state, categoryId: selectedCat};
+            const allCategories = {...state, [categoryId]: selectedCat};
             return allCategories;
         }
         default:

@@ -19,6 +19,8 @@ export default class CatalogItemDelete extends React.Component {
 
 	handleItemRemove = () => {
 		this.props.dispatch(removeItemFromCategory(this.selectedCategory.id, this.selectedItem.id));
+		this.props.history.push('/');
+		this.props.history.goForward();
 	};
 
 	render() {

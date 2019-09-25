@@ -18,7 +18,9 @@ export default class CatalogItemEdit extends React.Component {
 	}
 
 	handleItemUpdate = (newCat, name, description) => {
-		this.props.dispatch(editItemInCategory(this.selectedCategory.id, this.selectedItem.id, {name, description}))
+		this.props.dispatch(editItemInCategory(this.selectedCategory.id, this.selectedItem.id, {name: name || this.selectedItem.name, description}));
+		this.props.history.push('/');
+		this.props.history.goForward();
 	};
 
 	render() {

@@ -16,7 +16,7 @@ export const addAllCategories = () => {
 
 export const addCategory = (name, description) => {
     // TODO - Send a POST Request here to get the new id for newly added category
-    return {type: CategoryActionTypes.ADD_CATEGORY, payload: {name, description, id: Math.random() * 10000}};
+    return {type: CategoryActionTypes.ADD_CATEGORY, payload: {name, description, id: Math.floor(Math.random() * 10000)}};
 };
 
 export const removeCategory = (categoryId) => {
@@ -31,7 +31,7 @@ export const editCategory = (categoryId, newCategoryData) => {
 
 export const addItemToCategory = (categoryId, newItemData) => {
     // TODO - Send a POST
-    return {type: CategoryActionTypes.ADD_ITEM_TO_CATEGORY, payload: {categoryId, itemToAdd: {...newItemData, id: Math.random() * 10000 + 10000}}}
+    return {type: CategoryActionTypes.ADD_ITEM_TO_CATEGORY, payload: {categoryId, itemToAdd: {...newItemData, id: Math.floor(Math.random() * 10000 + 10000)}}}
 };
 
 export const removeItemFromCategory = (categoryId, itemId) => {

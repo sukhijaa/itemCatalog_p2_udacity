@@ -71,14 +71,16 @@ export default class EditAddDeleteItem extends React.PureComponent {
         const {newCategory, newName, newDescription} = this.state;
         return (
             <div className={'edit-add-delete-item-wrapper'}>
-                <div className={'eadiw-category-dd'}>
-                    <div className={'eadiw-label'}>Category Selected :</div>
-                    <Dropdown
-                        options={categoriesDD}
-                        value={newCategory}
-                        disabled={categoryDisabled}
-                        onChange={this.updateCategory}/>
-                </div>
+                {
+                    categoryDisabled ? null :
+                        <div className={'eadiw-category-dd'}>
+                            <div className={'eadiw-label'}>Category Selected :</div>
+                            <Dropdown
+                                options={categoriesDD}
+                                value={newCategory}
+                                onChange={this.updateCategory}/>
+                        </div>
+                }
                 <div className={'eadiw-item-name-wrapper'}>
                     <div className={'eadiw-label'}>Name :</div>
                     <input

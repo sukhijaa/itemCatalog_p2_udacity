@@ -10,7 +10,9 @@ import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
 export default class CatalogItemNew extends React.Component {
 
     handleItemUpdate = (newCat, name, description) => {
-        this.props.dispatch(addItemToCategory(newCat, {name, description}));
+        this.props.dispatch(addItemToCategory(newCat || 'New Item 1', {name, description}));
+        this.props.history.push('/');
+        this.props.history.goForward();
     };
 
     render() {
@@ -22,7 +24,7 @@ export default class CatalogItemNew extends React.Component {
             <div className='catalog-item-edit-wrapper'>
                 <EditAddDeleteItem
                     categoriesDD={allCategories}
-                    selectedCategory={(allCategories[0] || {}).id}
+                    selectedCategory={(allCategories[0] || {}).value}
                     submitButtonTitle={'Add'}
                     submitForm={this.handleItemUpdate}
                     goBackFunction={history.goBack}/>
