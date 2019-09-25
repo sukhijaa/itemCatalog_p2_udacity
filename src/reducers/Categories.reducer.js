@@ -40,7 +40,7 @@ export default (state = {}, action = {}) => {
             const allCategories = {...state};
             const selectedCat = allCategories[categoryId];
             const selectedItem = selectedCat.catalogItems[itemId];
-            selectedCat.catalogItems[itemId] = {...selectedItem, newItemData};
+            selectedCat.catalogItems[itemId] = {...selectedItem, ...newItemData};
             allCategories[categoryId] = selectedCat;
             return allCategories;
         }

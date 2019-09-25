@@ -17,10 +17,6 @@ export default class Categories extends React.Component {
 		super (props);
 	}
 
-	componentDidMount() {
-		this.props.dispatch(addAllCategories());
-	}
-
 	handleGroupingChange = (selectedObj) => {
 		this.props.dispatch(changeGroupingOrder(selectedObj.value));
 	};
@@ -67,6 +63,7 @@ export default class Categories extends React.Component {
 								key={groupValue + itemToRender.id}
 								catagoryItem={itemToRender}
 								category={itemToRender.category || ''}
+								expandable={!!itemToRender.catalogItems}
 								linkPrefix={groupValue === GROUPING_OPTIONS[0].value ? 'category' : 'item'}/>
 						)
 					})

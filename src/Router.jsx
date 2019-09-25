@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Categories from './routes/categories/Categories';
 import CategoryEdit from './routes/categories/CategoryEdit';
@@ -10,8 +11,16 @@ import CatalogItemDelete from './routes/catalogItems/CatalogItemDelete';
 import Header from './components/header/Header';
 import CategoryCreateNew from './routes/categories/CategoryCreateNew';
 import CatalogItemNew from './routes/catalogItems/CatalogItemNew';
+import {addAllCategories} from "./actions/Categories.action";
 
+@connect()
 export default class Router extends React.Component {
+
+	componentDidMount() {
+		this.props.dispatch(addAllCategories());
+	}
+
+
 	render() {
 		return (
 			<div className='item-catalog-wrapper'>

@@ -1,0 +1,44 @@
+.edit-add-delete-item-wrapper {
+  padding-left: 20px;
+  width: 360px;
+  .eadiw-category-dd {
+    display: flex;
+    margin: 20px 0;
+    .Dropdown-root {
+      width: 209px;
+    }
+  }
+  .eadiw-item-name-wrapper {
+    display: flex;
+    margin: 20px 0;
+    input, textarea {
+      width: 200px;
+      height: 30px;
+      padding-left: 5px;
+    }
+  }
+  .eadiw-submit-button {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    justify-content: center;
+    input {
+      width: 90px;
+      height: 40px;
+      background: none;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid gray;
+      margin: 0 10px;
+      &:hover {
+        background-color: gray;
+        color: white;
+      }
+    }
+  }
+  .eadiw-label {
+    width: 150px;
+    display: flex;
+    align-items: center;
+  }
+}

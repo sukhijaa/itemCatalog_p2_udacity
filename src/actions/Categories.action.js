@@ -29,7 +29,7 @@ export const editCategory = (categoryId, newCategoryData) => {
     return {type: CategoryActionTypes.EDIT_CATEGORY, payload: {categoryId, newCategoryData}};
 };
 
-export const addItemToCategory = (categoryId, itemId, newItemData) => {
+export const addItemToCategory = (categoryId, newItemData) => {
     // TODO - Send a POST
     return {type: CategoryActionTypes.ADD_ITEM_TO_CATEGORY, payload: {categoryId, itemToAdd: {...newItemData, id: Math.random() * 10000 + 10000}}}
 };

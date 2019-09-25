@@ -9,7 +9,8 @@
         "alias": {
           "reducers": "./src/reducers",
           "actions": "./src/actions",
-          "store": "./src/store.js"
+          "store": "./src/store.js",
+          "components": "./src/components"
         }
       }
     ]

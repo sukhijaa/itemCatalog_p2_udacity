@@ -24,11 +24,9 @@ export default class CategoryDetails extends React.Component {
 		const {catagoryItem, linkPrefix, category, expandable} = this.props;
 		return (
 			<div className='category-detail-wrapper'>
-				{
-					expandable ?
-						<div className={'category-expandable-icon'}> > </div>
-						: null
-				}
+				<div className={'category-expandable-icon'}>
+					{expandable ? '>' : null}
+				</div>
 				<div className={'category-name'}>{catagoryItem.name || ''}</div>
 				{
 					catagoryItem.description ?
