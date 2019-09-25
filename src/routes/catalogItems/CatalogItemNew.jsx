@@ -16,15 +16,19 @@ export default class CatalogItemNew extends React.Component {
     };
 
     render() {
-        const {categories, history} = this.props;
+        const {categories, history, location} = this.props;
 
+        const queryParams = location.search ? location.search.split('catalogId=') : [];
+        let categoryId = queryParams.length >= 2 ? queryParams[1] : '';
         const allCategories = getAllCategoriesForDD(categories);
+
+        categoryId = typeof parseInt(categoryId) === 'number' ? categoryId : allCategories[0].value;
 
         return (
             <div className='catalog-item-edit-wrapper'>
                 <EditAddDeleteItem
                     categoriesDD={allCategories}
-                    selectedCategory={(allCategories[0] || {}).value}
+                    selectedCategory={categoryId}
                     submitButtonTitle={'Add'}
                     submitForm={this.handleItemUpdate}
                     goBackFunction={history.goBack}/>

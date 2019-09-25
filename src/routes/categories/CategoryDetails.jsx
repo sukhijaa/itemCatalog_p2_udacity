@@ -40,36 +40,57 @@ export default class CategoryDetails extends React.Component {
 
 	render() {
 		const {categoryItem, linkPrefix, category, expandable, expandedGroups} = this.props;
-		const currentStatus = expandedGroups[categoryItem.id];
+		const currentStatus = expandable ? expandedGroups[categoryItem.id] : false;
 		return (
-			<div className='category-detail-wrapper'>
-				<div className={'category-expandable-icon'}>
-					{
-						expandable ?
-							<div className={`arrow-right-accent ${currentStatus ? 'expanded' : ''}`}
-								 onClick={this.handleExpansionClick}/>
-							: null
+			<div className={'category-detail-wrapper'}>
+				<div className='category-detail-row-wrapper'>
+					<div className={'category-expandable-icon'}>
+						{
+							expandable ?
+								<div className={`arrow-right-accent ${currentStatus ? 'expanded' : ''}`}
+									 onClick={this.handleExpansionClick}/>
+								: null
 
+						}
+					</div>
+					<div className={'category-name'}>{categoryItem.name || ''}</div>
+					{
+						categoryItem.description ?
+							<div className={'category-short-description'}>
+								{`| ${categoryItem.description.length > 60 ? categoryItem.description.substr(0, 57) + '...' : categoryItem.description}`}
+							</div> : null
 					}
+					{
+						category ?
+							<div className={'category-type-for-item'}>{` | Category : ${category}`}</div>
+							: null
+					}
+					<div className={'category-item-edit-link'}>
+						<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
+					</div>
+					<div className={'category-item-delete-link'}>
+						<Link to={`/${linkPrefix}/${categoryItem.id}/delete`}>Delete</Link>
+					</div>
 				</div>
-				<div className={'category-name'}>{categoryItem.name || ''}</div>
 				{
-					categoryItem.description ?
-						<div className={'category-short-description'}>
-							{`| ${categoryItem.description.length > 60 ? categoryItem.description.substr(0, 57) + '...' : categoryItem.description}`}
+					currentStatus ?
+						<div className={'category-items-wrapper'}>
+							{
+								Object.keys(categoryItem.catalogItems || {}).map(itemId => {
+									const item = categoryItem.catalogItems[itemId];
+									return (
+										<CategoryDetails
+											categoryItem={item}
+											expandable={false}
+											linkPrefix={'item'}/>
+									);
+								})
+							}
+							<div className={'add-item-link'}>
+								<Link to={`/item/new?catalogId=${categoryItem.id}`}>Add Item</Link>
+							</div>
 						</div> : null
 				}
-				{
-					category ?
-						<div className={'category-type-for-item'}>{` | Category : ${category}`}</div>
-						: null
-				}
-				<div className={'category-item-edit-link'}>
-					<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
-				</div>
-				<div className={'category-item-delete-link'}>
-					<Link to={`/${linkPrefix}/${categoryItem.id}/delete`}>Delete</Link>
-				</div>
 			</div>
 		);
 	}
