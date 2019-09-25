@@ -61,7 +61,7 @@ export default class Categories extends React.Component {
 						return (
 							<CategoryDetails
 								key={groupValue + itemToRender.id}
-								catagoryItem={itemToRender}
+								categoryItem={itemToRender}
 								category={itemToRender.category || ''}
 								expandable={!!itemToRender.catalogItems}
 								linkPrefix={groupValue === GROUPING_OPTIONS[0].value ? 'category' : 'item'}/>

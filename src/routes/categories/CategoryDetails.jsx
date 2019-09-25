@@ -1,11 +1,16 @@
 import React from 'react';
+import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import './Categories.scss';
+import {collapseGroup, expandGroup} from "../../actions/UIProperties.action";
 
+@connect(store => ({
+	expandedGroups: store.uiProperties.expandedGroups
+}))
 export default class CategoryDetails extends React.Component {
 	static propTypes = {
-		catagoryItem: PropTypes.object,
+		categoryItem: PropTypes.object,
 		linkPrefix: PropTypes.string,
 		expandable: PropTypes.bool,
 		category: PropTypes.string,
@@ -20,18 +25,38 @@ export default class CategoryDetails extends React.Component {
 	constructor (props) {
 		super(props);
 	}
+
+	handleExpansionClick = () => {
+		const {categoryItem, expandedGroups} = this.props;
+		const currentStatus = expandedGroups[categoryItem.id];
+
+		if (currentStatus) {
+			this.props.dispatch(collapseGroup(categoryItem.id));
+		} else {
+			this.props.dispatch(expandGroup(categoryItem.id));
+		}
+
+	};
+
 	render() {
-		const {catagoryItem, linkPrefix, category, expandable} = this.props;
+		const {categoryItem, linkPrefix, category, expandable, expandedGroups} = this.props;
+		const currentStatus = expandedGroups[categoryItem.id];
 		return (
 			<div className='category-detail-wrapper'>
 				<div className={'category-expandable-icon'}>
-					{expandable ? '>' : null}
+					{
+						expandable ?
+							<div className={`arrow-right-accent ${currentStatus ? 'expanded' : ''}`}
+								 onClick={this.handleExpansionClick}/>
+							: null
+
+					}
 				</div>
-				<div className={'category-name'}>{catagoryItem.name || ''}</div>
+				<div className={'category-name'}>{categoryItem.name || ''}</div>
 				{
-					catagoryItem.description ?
+					categoryItem.description ?
 						<div className={'category-short-description'}>
-							{`| ${catagoryItem.description.length > 60 ? catagoryItem.description.substr(0, 57) + '...' : catagoryItem.description}`}
+							{`| ${categoryItem.description.length > 60 ? categoryItem.description.substr(0, 57) + '...' : categoryItem.description}`}
 						</div> : null
 				}
 				{
@@ -40,10 +65,10 @@ export default class CategoryDetails extends React.Component {
 						: null
 				}
 				<div className={'category-item-edit-link'}>
-					<Link to={`/${linkPrefix}/${catagoryItem.id}/edit`}>Edit</Link>
+					<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
 				</div>
 				<div className={'category-item-delete-link'}>
-					<Link to={`/${linkPrefix}/${catagoryItem.id}/delete`}>Delete</Link>
+					<Link to={`/${linkPrefix}/${categoryItem.id}/delete`}>Delete</Link>
 				</div>
 			</div>
 		);

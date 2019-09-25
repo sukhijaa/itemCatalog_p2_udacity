@@ -15,11 +15,13 @@
   display: flex;
   align-items: center;
   height: 50px;
-  width: 100%;
   box-shadow: 0px 0px 10px 5px #43464B40;
-  margin: 10px 0;
+  margin: 10px 15px;
   .category-expandable-icon {
     width: 20px;
+    .expanded {
+      transform: rotate(135deg);
+    }
   }
   .category-name {
     font-size: 14px;
