@@ -9,7 +9,7 @@ export const CategoryActionTypes = {
 };
 
 export const addAllCategories = () => {
-    const defaultArray = Array.apply(null, Array(10)).map((item, index) => ({id: index, name: 'Dummy Id', description: 'Dummy Desc', catalogItems: {[index + 100]: {name: 'Item 1'}}}));
+    const defaultArray = Array.apply(null, Array(10)).map((item, index) => ({id: index, name: 'Dummy Category ' + index, description: 'Dummy Desc', catalogItems: {[index + 100]: {name: 'Item ' + index, id: index + 100}}}));
     const allCats = window.allCategoriesData || defaultArray;
     return {type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: allCats}
 };

@@ -1,3 +1,16 @@
+.categories-wrapper {
+  .grouping-dd-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px 10px 0 0;
+    .Dropdown-root{
+      width: 174px;
+      margin-left: 10px;
+    }
+  }
+}
+
 .category-detail-wrapper {
   display: flex;
   align-items: center;
@@ -15,10 +28,17 @@
   .category-short-description {
     font-size: 12px;
     color: darkgray;
-    flex-grow: 100;
+  }
+  .category-type-for-item {
+    padding-left: 10px;
+    color: orange;
   }
   .category-item-edit-link {
     width: 50px;
+    flex-grow: 100;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
   }
   .category-item-delete-link {
     width: 50px;

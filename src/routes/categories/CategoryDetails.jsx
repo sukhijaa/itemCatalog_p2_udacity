@@ -6,27 +6,41 @@ import './Categories.scss';
 export default class CategoryDetails extends React.Component {
 	static propTypes = {
 		catagoryItem: PropTypes.object,
-		linkPrefix: PropTypes.string
+		linkPrefix: PropTypes.string,
+		expandable: PropTypes.bool,
+		category: PropTypes.string,
 	};
 
 	static defaultProps = {
-		linkPrefix: 'category'
-	}
+		linkPrefix: 'category',
+		expandable: true,
+		category: ''
+	};
 
 	constructor (props) {
 		super(props);
 	}
 	render() {
-		const {catagoryItem, linkPrefix} = this.props;
+		const {catagoryItem, linkPrefix, category, expandable} = this.props;
 		return (
 			<div className='category-detail-wrapper'>
-				<div className={'category-expandable-icon'}> > </div>
+				{
+					expandable ?
+						<div className={'category-expandable-icon'}> > </div>
+						: null
+				}
 				<div className={'category-name'}>{catagoryItem.name || ''}</div>
-				<div className={'category-short-description'}>
-					{catagoryItem.description ?
-						`| ${catagoryItem.description.length > 60 ? catagoryItem.description.substr(0, 57) + '...' : catagoryItem.description}`
-						: null }
-				</div>
+				{
+					catagoryItem.description ?
+						<div className={'category-short-description'}>
+							{`| ${catagoryItem.description.length > 60 ? catagoryItem.description.substr(0, 57) + '...' : catagoryItem.description}`}
+						</div> : null
+				}
+				{
+					category ?
+						<div className={'category-type-for-item'}>{` | Category : ${category}`}</div>
+						: null
+				}
 				<div className={'category-item-edit-link'}>
 					<Link to={`/${linkPrefix}/${catagoryItem.id}/edit`}>Edit</Link>
 				</div>
