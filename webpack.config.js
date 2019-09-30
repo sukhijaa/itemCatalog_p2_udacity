@@ -6,7 +6,7 @@ const isDevelopment = process.env.NODE_ENV === 'development'
 module.exports = {
     entry: './src/app.js',
     output: {
-        path: path.join(__dirname, '/dist'),
+        path: path.join(__dirname, '/server/static'),
         filename: 'bundle.js',
         publicPath: '/'
     },

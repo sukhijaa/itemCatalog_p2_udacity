@@ -1,5 +1,7 @@
 /.idea
 /dist
+/server/.vagrant
+/server/static/index.html
 
 # dependencies
 /node_modules
