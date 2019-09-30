@@ -17,7 +17,7 @@ import {addAllCategories} from "./actions/Categories.action";
 export default class Router extends React.Component {
 
 	componentDidMount() {
-		this.props.dispatch(addAllCategories());
+		addAllCategories(this.props.dispatch);
 	}
 
 

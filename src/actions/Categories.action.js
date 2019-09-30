@@ -1,3 +1,6 @@
+import {APIEndpoints, HTTP} from "../utility/HTTPRequests";
+import {} from 'store'
+
 export const CategoryActionTypes = {
     ADD_ALL_CATEGORIES: 'addAllCats',
     ADD_CATEGORY: 'addCategory',
@@ -8,10 +11,13 @@ export const CategoryActionTypes = {
     EDIT_ITEM_IN_CATEGORY: 'editCatItem'
 };
 
-export const addAllCategories = () => {
+export const addAllCategories = (dispatch) => {
     const defaultArray = Array.apply(null, Array(10)).map((item, index) => ({id: index, name: 'Dummy Category ' + index, description: 'Dummy Desc', catalogItems: {[index + 100]: {name: 'Item ' + index, id: index + 100}}}));
-    const allCats = window.allCategoriesData || defaultArray;
-    return {type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: allCats}
+    HTTP.GET(APIEndpoints.GET_ALL_CATEGORIES).then(res => {
+        dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: res.data})
+    }).catch(err => {
+       dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: defaultArray});
+    });
 };
 
 export const addCategory = (name, description) => {
@@ -20,7 +26,6 @@ export const addCategory = (name, description) => {
 };
 
 export const removeCategory = (categoryId) => {
-    // TODO - Send a DELETE
     return {type: CategoryActionTypes.REMOVE_CATEGORY, payload: categoryId};
 };
 

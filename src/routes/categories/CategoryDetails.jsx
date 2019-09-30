@@ -53,7 +53,9 @@ export default class CategoryDetails extends React.Component {
 
 						}
 					</div>
-					<div className={'category-name'}>{categoryItem.name || ''}</div>
+					<Link to={`/${linkPrefix}/${categoryItem.id}`}>
+						<div className={'category-name'}>{categoryItem.name || ''}</div>
+					</Link>
 					{
 						categoryItem.description ?
 							<div className={'category-short-description'}>

@@ -79,7 +79,7 @@ module.exports = {
     ],
     devServer: {
         inline:true,
-        port: 8000,
+        port: 8050,
         clientLogLevel: 'none',
         hot: true,
         compress: true,
