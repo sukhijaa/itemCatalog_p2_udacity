@@ -4,6 +4,8 @@ import {getAllCategoriesForDD} from '../categories/Categories.utils';
 import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
 import {removeItemFromCategory} from 'actions/Categories.action';
 import {connect} from 'react-redux';
+import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
+import {removeCategory} from "../../actions/Categories.action";
 
 @connect(store => ({
 	categories: store.categories
@@ -18,9 +20,13 @@ export default class CatalogItemDelete extends React.Component {
 	}
 
 	handleItemRemove = () => {
-		this.props.dispatch(removeItemFromCategory(this.selectedCategory.id, this.selectedItem.id));
-		this.props.history.push('/');
-		this.props.history.goForward();
+		HTTP.DELETE(buildURL(APIEndpoints.DELETE_ITEM, {itemId: this.selectedItem.id})).then(res => {
+			this.props.dispatch(removeItemFromCategory(this.selectedCategory.id, this.selectedItem.id));
+			this.props.history.push('/');
+			this.props.history.goForward();
+		}).error((err) => {
+			this.setState({errorMessage: 'Unable to delete the Item. Reason being : ' + err.message})
+		});
 	};
 
 	render() {

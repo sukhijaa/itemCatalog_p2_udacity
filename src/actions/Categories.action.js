@@ -14,7 +14,13 @@ export const CategoryActionTypes = {
 export const addAllCategories = (dispatch) => {
     const defaultArray = Array.apply(null, Array(10)).map((item, index) => ({id: index, name: 'Dummy Category ' + index, description: 'Dummy Desc', catalogItems: {[index + 100]: {name: 'Item ' + index, id: index + 100}}}));
     HTTP.GET(APIEndpoints.GET_ALL_CATEGORIES).then(res => {
-        dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: res.data})
+        const allCategories = (res.data || []).map(category => {
+            const allItems = category.catalogItems || [];
+            category.catalogItems = {};
+            allItems.forEach(item => category.catalogItems[item.id] = item);
+            return category;
+        });
+        dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: allCategories})
     }).catch(err => {
        dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: defaultArray});
     });

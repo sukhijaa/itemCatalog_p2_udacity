@@ -55,6 +55,15 @@ def deleteCategoryAndItsItems(category_id):
         session.commit()
         return {}
 
+@app.route('/item/<int:item_id>/delete', methods=['GET', 'DELETE', 'POST'])
+def deleteSingleCatalogItem(item_id):
+    if request.method == 'GET':
+        return render_template('index.html', categoryData=getCategoriesData())
+    else:
+        itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
+        session.delete(itemToDelete)
+        session.commit()
+        return {}
 
 @app.route('/getAllCategories')
 def returnJSONOfAllCatsAndItems():

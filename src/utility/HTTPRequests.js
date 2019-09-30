@@ -4,6 +4,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const APIEndpoints = {
     DELETE_CATEGORY: '/category/:categoryId/delete',
+    DELETE_ITEM: '/item/:itemId/delete',
     GET_ALL_CATEGORIES: '/getAllCategories',
 };
 
