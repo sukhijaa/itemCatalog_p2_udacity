@@ -30,7 +30,6 @@ export const addAllCategories = (dispatch) => {
 };
 
 export const addCategory = (newCategoryData) => {
-    // TODO - Send a POST Request here to get the new id for newly added category
     return {type: CategoryActionTypes.ADD_CATEGORY, payload: newCategoryData};
 };
 
@@ -39,22 +38,18 @@ export const removeCategory = (categoryId) => {
 };
 
 export const editCategory = (categoryId, newCategoryData) => {
-    // TODO - Send a POST
     return {type: CategoryActionTypes.EDIT_CATEGORY, payload: {categoryId, newCategoryData}};
 };
 
 export const addItemToCategory = (categoryId, itemToAdd) => {
-    // TODO - Send a POST
     return {type: CategoryActionTypes.ADD_ITEM_TO_CATEGORY, payload: {categoryId, itemToAdd}}
 };
 
 export const removeItemFromCategory = (categoryId, itemId) => {
-    // TODO - Send a DELETE
     return {type: CategoryActionTypes.REMOVE_ITEM_FROM_CATEGORY, payload: {categoryId, itemId}};
 };
 
 export const editItemInCategory = (categoryId, itemId, newItemData) => {
-    // TODO - Send a POST
     return {type: CategoryActionTypes.EDIT_ITEM_IN_CATEGORY, payload: {categoryId, itemId, newItemData}};
 };
 

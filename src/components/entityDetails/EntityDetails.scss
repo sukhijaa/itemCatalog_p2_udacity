@@ -1,0 +1,41 @@
+.entity-details-wrapper {
+  .entity-name-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    .entity-name {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .entity-type {
+      font-size: 16px;
+      color: gray;
+      margin-left: 10px;
+    }
+  }
+  .entity-description {
+    width: 400px;
+    padding: 5px;
+  }
+  .entity-catalog-items {
+    margin: 15px 0;
+    border-top: 1px solid gray;
+    padding: 15px 0;
+  }
+  .entity-footer {
+    display: flex;
+    border-top: 1px solid gray;
+    padding-top: 10px;
+    .edit-entity, .cancel-entity {
+      padding: 10px 20px;
+      color: white;
+      background-color: green;
+      border-radius: 5px;
+      margin: 0 20px;
+      cursor: pointer;
+    }
+    .cancel-entity {
+      background-color: gray;
+    }
+  }
+}
