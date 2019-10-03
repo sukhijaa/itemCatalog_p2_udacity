@@ -1,12 +1,12 @@
 import React from 'react';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import './Categories.scss';
-import {collapseGroup, expandGroup} from "../../actions/UIProperties.action";
+import {collapseGroup, expandGroup} from '../../actions/UIProperties.action';
 
 @connect(store => ({
-	expandedGroups: store.uiProperties.expandedGroups
+	expandedGroups: store.uiProperties.expandedGroups,
 }))
 export default class CategoryDetails extends React.Component {
 	static propTypes = {
@@ -19,10 +19,10 @@ export default class CategoryDetails extends React.Component {
 	static defaultProps = {
 		linkPrefix: 'category',
 		expandable: true,
-		category: ''
+		category: '',
 	};
 
-	constructor (props) {
+	constructor(props) {
 		super(props);
 	}
 
@@ -42,9 +42,9 @@ export default class CategoryDetails extends React.Component {
 		const {categoryItem, linkPrefix, category, expandable, expandedGroups} = this.props;
 		const currentStatus = expandable ? expandedGroups[categoryItem.id] : false;
 		return (
-			<div className={'category-detail-wrapper'}>
+			<div className='category-detail-wrapper'>
 				<div className='category-detail-row-wrapper'>
-					<div className={'category-expandable-icon'}>
+					<div className='category-expandable-icon'>
 						{
 							expandable ?
 								<div className={`arrow-right-accent ${currentStatus ? 'expanded' : ''}`}
@@ -54,29 +54,29 @@ export default class CategoryDetails extends React.Component {
 						}
 					</div>
 					<Link to={`/${linkPrefix}/${categoryItem.id}`}>
-						<div className={'category-name'}>{categoryItem.name || ''}</div>
+						<div className='category-name'>{categoryItem.name || ''}</div>
 					</Link>
 					{
 						categoryItem.description ?
-							<div className={'category-short-description'}>
+							<div className='category-short-description'>
 								{`| ${categoryItem.description.length > 60 ? categoryItem.description.substr(0, 57) + '...' : categoryItem.description}`}
 							</div> : null
 					}
 					{
 						category ?
-							<div className={'category-type-for-item'}>{` | Category : ${category}`}</div>
+							<div className='category-type-for-item'>{` | Category : ${category}`}</div>
 							: null
 					}
-					<div className={'category-item-edit-link'}>
+					<div className='category-item-edit-link'>
 						<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
 					</div>
-					<div className={'category-item-delete-link'}>
+					<div className='category-item-delete-link'>
 						<Link to={`/${linkPrefix}/${categoryItem.id}/delete`}>Delete</Link>
 					</div>
 				</div>
 				{
 					currentStatus ?
-						<div className={'category-items-wrapper'}>
+						<div className='category-items-wrapper'>
 							{
 								Object.keys(categoryItem.catalogItems || {}).map(itemId => {
 									const item = categoryItem.catalogItems[itemId];
@@ -84,11 +84,11 @@ export default class CategoryDetails extends React.Component {
 										<CategoryDetails
 											categoryItem={item}
 											expandable={false}
-											linkPrefix={'item'}/>
+											linkPrefix='item'/>
 									);
 								})
 							}
-							<div className={'add-item-link'}>
+							<div className='add-item-link'>
 								<Link to={`/item/new?catalogId=${categoryItem.id}`}>Add Item</Link>
 							</div>
 						</div> : null

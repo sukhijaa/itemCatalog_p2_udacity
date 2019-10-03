@@ -1,15 +1,15 @@
 import React from 'react';
-import {removeCategory} from "../../actions/Categories.action";
-import EditAddDeleteItem from "../../components/EditAddDeleteItem/EditAddDeleteItem";
-import {connect} from "react-redux";
-import {HTTP, APIEndpoints, buildURL} from "../../utility/HTTPRequests";
-import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
+import {removeCategory} from '../../actions/Categories.action';
+import EditAddDeleteItem from '../../components/EditAddDeleteItem/EditAddDeleteItem';
+import {connect} from 'react-redux';
+import {HTTP, APIEndpoints, buildURL} from '../../utility/HTTPRequests';
+import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
 
 @connect(store => ({categories: store.categories}))
 export default class CategoryDelete extends React.Component {
 
 	state = {
-		errorMessage: ''
+		errorMessage: '',
 	};
 
 	handleCategoryUpdate = () => {
@@ -19,7 +19,7 @@ export default class CategoryDelete extends React.Component {
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch((err) => {
-			this.props.dispatch(setErrorMessage(`Failed to delete Category : "${this.selectedCategory.name}".\n\n Error Message: ${err.message}`))
+			this.props.dispatch(setErrorMessage(`Failed to delete Category : "${this.selectedCategory.name}".\n\n Error Message: ${err.message}`));
 		});
 	};
 
@@ -43,9 +43,9 @@ export default class CategoryDelete extends React.Component {
 					itemDescription={this.selectedCategory.description}
 					itemDescriptionDisabled={true}
 					goBackFunction={history.goBack}
-					submitButtonTitle={'Delete'}
+					submitButtonTitle='Delete'
 					submitForm={this.handleCategoryUpdate}/>
-				<div className={'error-message'}>{this.state.errorMessage}</div>
+				<div className='error-message'>{this.state.errorMessage}</div>
 			</div>
 		);
 	}

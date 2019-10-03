@@ -263,11 +263,11 @@ module.exports = {
 	"overrides": [{
 		"files": ["*.test.js", "*.test.pact.js", "*.stories.js"],
 		"rules": {
-		  "max-lines-per-function": 0,
-		  "max-lines": 0,
-		  "max-statements": 0,
-		  "max-len": 0,
-		  "max-nested-callbacks": 0
+			"max-lines-per-function": 0,
+			"max-lines": 0,
+			"max-statements": 0,
+			"max-len": 0,
+			"max-nested-callbacks": 0
 		}
-	 }]
+	}]
 }

@@ -6,7 +6,7 @@ import UIPropertiesReducer from './UIProperties.reducer.js';
 const combinedReducers = {
 	loginData: LoginReducer,
 	categories: CategoriesReducer,
-	uiProperties: UIPropertiesReducer
+	uiProperties: UIPropertiesReducer,
 };
 
 export default combineReducers(combinedReducers);

@@ -4,11 +4,11 @@ import {connect} from 'react-redux';
 import {getCategoryObjForItemId} from './CatalogItem.utils';
 import {getAllCategoriesForDD} from '../categories/Categories.utils';
 import {editItemInCategory} from 'actions/Categories.action';
-import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
-import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
+import {APIEndpoints, buildURL, HTTP} from '../../utility/HTTPRequests';
+import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
 
 @connect(store => ({
-	categories: store.categories
+	categories: store.categories,
 }))
 export default class CatalogItemEdit extends React.Component {
 
@@ -29,7 +29,7 @@ export default class CatalogItemEdit extends React.Component {
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch(err => {
-			this.props.dispatch(setErrorMessage(`Failed to update Catalog Item.\n\nError Message: ${err.message}`))
+			this.props.dispatch(setErrorMessage(`Failed to update Catalog Item.\n\nError Message: ${err.message}`));
 		});
 	};
 
@@ -46,13 +46,13 @@ export default class CatalogItemEdit extends React.Component {
 
 		return (
 			<div className='catalog-item-edit-wrapper'>
-                <EditAddDeleteItem
+				<EditAddDeleteItem
 					categoriesDD={getAllCategoriesForDD(categories)}
 					selectedCategory={this.selectedCategory.id + ''}
 					categoryDisabled={true}
 					itemDescription={this.selectedItem.description}
 					itemName={this.selectedItem.name}
-					submitButtonTitle={'Save'}
+					submitButtonTitle='Save'
 					submitForm={this.handleItemUpdate}
 					goBackFunction={history.goBack}/>
 			</div>

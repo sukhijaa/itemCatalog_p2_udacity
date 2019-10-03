@@ -4,12 +4,11 @@ import {getAllCategoriesForDD} from '../categories/Categories.utils';
 import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
 import {removeItemFromCategory} from 'actions/Categories.action';
 import {connect} from 'react-redux';
-import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
-import {removeCategory} from "../../actions/Categories.action";
-import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
+import {APIEndpoints, buildURL, HTTP} from '../../utility/HTTPRequests';
+import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
 
 @connect(store => ({
-	categories: store.categories
+	categories: store.categories,
 }))
 export default class CatalogItemDelete extends React.Component {
 
@@ -27,7 +26,7 @@ export default class CatalogItemDelete extends React.Component {
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch((err) => {
-			this.props.dispatch(setErrorMessage(`Failed to delete Catalog Item : "${this.selectedItem.name}".\n\n Error Message: ${err.message}`))
+			this.props.dispatch(setErrorMessage(`Failed to delete Catalog Item : "${this.selectedItem.name}".\n\n Error Message: ${err.message}`));
 		});
 	};
 
@@ -50,7 +49,7 @@ export default class CatalogItemDelete extends React.Component {
 					categoryDisabled={true}
 					itemDescription={this.selectedItem.description}
 					itemName={this.selectedItem.name}
-					submitButtonTitle={'Delete'}
+					submitButtonTitle='Delete'
 					submitForm={this.handleItemRemove}
 					itemDescriptionDisabled={true}
 					itemNameDisabled={true}

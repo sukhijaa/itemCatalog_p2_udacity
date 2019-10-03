@@ -1,9 +1,9 @@
 import React from 'react';
-import {connect} from "react-redux";
-import EditAddDeleteItem from "../../components/EditAddDeleteItem/EditAddDeleteItem";
-import {editCategory} from "../../actions/Categories.action";
-import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
-import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
+import {connect} from 'react-redux';
+import EditAddDeleteItem from '../../components/EditAddDeleteItem/EditAddDeleteItem';
+import {editCategory} from '../../actions/Categories.action';
+import {APIEndpoints, buildURL, HTTP} from '../../utility/HTTPRequests';
+import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
 
 @connect(store => ({categories: store.categories}))
 export default class CategoryEdit extends React.Component {
@@ -17,7 +17,7 @@ export default class CategoryEdit extends React.Component {
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch(err => {
-			this.props.dispatch(setErrorMessage(`Failed to update Category : ${name} \n\nError Message: ${err.message}`))
+			this.props.dispatch(setErrorMessage(`Failed to update Category : ${name} \n\nError Message: ${err.message}`));
 		});
 	};
 
@@ -33,7 +33,7 @@ export default class CategoryEdit extends React.Component {
 
 		return (
 			<div className='category-edit-wrapper'>
-                <EditAddDeleteItem
+				<EditAddDeleteItem
 					selectedCategory={this.selectedCategory.name}
 					categoryDisabled={true}
 					itemName={this.selectedCategory.name}

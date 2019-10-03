@@ -42,26 +42,26 @@ export default class Header extends React.Component {
 		this.setState({showDD: !this.state.showDD});
 	};
 
-    render() {
+	render() {
 	    const {isLoggedIn, userName} = this.props;
     	return (
     		<div className='header-wrapper'>
     			<div className='header-label'>
-					<Link to={'/'}>ItemCatalog - Stuff about Stuff</Link>
+					<Link to='/'>ItemCatalog - Stuff about Stuff</Link>
     			</div>
     			<div className='header-login-title'>
     				{
     					isLoggedIn ?
     						<div
-    							className='header-login-dropdown'
-    							onClick={this.toggleShowDD}>
+								className='header-login-dropdown'
+								onClick={this.toggleShowDD}>
 								Welcome {userName}
     							{
     								this.state.showDD ?
     									<div className='header-login-dd-wrapper' ref={ref => this.headerLoginRef = ref}>
     										<div className='login-dd-tip-triangle'/>
     										<div className='login-dd-content-wrapper'>
-												<Link to={'/category/new'} className='login-dd-list-item'>Add Category</Link>
+												<Link to='/category/new' className='login-dd-list-item'>Add Category</Link>
     											<div className='login-dd-list-item' onClick={this.logUserOut}>Logout</div>
     										</div>
     									</div> : null
@@ -73,5 +73,5 @@ export default class Header extends React.Component {
     			</div>
     		</div>
     	);
-    }
+	}
 }
