@@ -3,6 +3,7 @@ import {removeCategory} from "../../actions/Categories.action";
 import EditAddDeleteItem from "../../components/EditAddDeleteItem/EditAddDeleteItem";
 import {connect} from "react-redux";
 import {HTTP, APIEndpoints, buildURL} from "../../utility/HTTPRequests";
+import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
 
 @connect(store => ({categories: store.categories}))
 export default class CategoryDelete extends React.Component {
@@ -14,10 +15,11 @@ export default class CategoryDelete extends React.Component {
 	handleCategoryUpdate = () => {
 		HTTP.DELETE(buildURL(APIEndpoints.DELETE_CATEGORY, {categoryId: this.selectedCategory.id})).then(res => {
 			this.props.dispatch(removeCategory(this.selectedCategory.id));
+			this.props.dispatch(setNOtificationMessage(`Deleted Category : "${this.selectedCategory.name}"`));
 			this.props.history.push('/');
 			this.props.history.goForward();
-		}).error((err) => {
-			this.setState({errorMessage: 'Unable to delete the Category. Reason being : ' + err.message})
+		}).catch((err) => {
+			this.props.dispatch(setErrorMessage(`Failed to delete Category : "${this.selectedCategory.name}".\n\n Error Message: ${err.message}`))
 		});
 	};
 

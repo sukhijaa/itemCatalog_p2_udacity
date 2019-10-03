@@ -5,6 +5,7 @@ import {getCategoryObjForItemId} from './CatalogItem.utils';
 import {getAllCategoriesForDD} from '../categories/Categories.utils';
 import {editItemInCategory} from 'actions/Categories.action';
 import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
+import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
 
 @connect(store => ({
 	categories: store.categories
@@ -20,12 +21,15 @@ export default class CatalogItemEdit extends React.Component {
 
 	handleItemUpdate = (newCat, name, description) => {
 		HTTP.POST(
-			buildURL(APIEndpoints.EDIT_ITEM, {itemId: this.selectedItem.id}),
+			buildURL(APIEndpoints.EDIT_ITEM, {itemId: parseInt(this.selectedItem.id)}),
 			{name: name || 'New Item 1', description}).then(res => {
 
 			this.props.dispatch(editItemInCategory(this.selectedCategory.id, this.selectedItem.id, res.data));
+			this.props.dispatch(setNOtificationMessage(`${name} : Updated Succesfully`));
 			this.props.history.push('/');
 			this.props.history.goForward();
+		}).catch(err => {
+			this.props.dispatch(setErrorMessage(`Failed to update Catalog Item.\n\nError Message: ${err.message}`))
 		});
 	};
 

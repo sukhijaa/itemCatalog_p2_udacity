@@ -1,5 +1,5 @@
 import {APIEndpoints, HTTP} from "../utility/HTTPRequests";
-import {} from 'store'
+import {UIPropertiesActionTypes} from "./UIProperties.action";
 
 export const CategoryActionTypes = {
     ADD_ALL_CATEGORIES: 'addAllCats',
@@ -21,8 +21,10 @@ export const addAllCategories = (dispatch) => {
             return category;
         });
         dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: allCategories})
+        dispatch({type: UIPropertiesActionTypes.SET_NOTIFICATION_MESSAGE, payload: 'Data Loaded Successfully'});
     }).catch(err => {
        dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: defaultArray});
+       dispatch({type: UIPropertiesActionTypes.SET_ERROR_MESSAGE, payload: `Couldn't load properties Data. Showing the Dummy Values.\n\n Error Message: ${err.message}`})
        console.error(err);
     });
 };

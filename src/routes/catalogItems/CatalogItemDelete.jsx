@@ -6,6 +6,7 @@ import {removeItemFromCategory} from 'actions/Categories.action';
 import {connect} from 'react-redux';
 import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
 import {removeCategory} from "../../actions/Categories.action";
+import {setErrorMessage, setNOtificationMessage} from "../../actions/UIProperties.action";
 
 @connect(store => ({
 	categories: store.categories
@@ -20,12 +21,13 @@ export default class CatalogItemDelete extends React.Component {
 	}
 
 	handleItemRemove = () => {
-		HTTP.DELETE(buildURL(APIEndpoints.DELETE_ITEM, {itemId: this.selectedItem.id})).then(res => {
+		HTTP.DELETE(buildURL(APIEndpoints.DELETE_ITEM, {itemId: parseInt(this.selectedItem.id)})).then(res => {
 			this.props.dispatch(removeItemFromCategory(this.selectedCategory.id, this.selectedItem.id));
+			this.props.dispatch(setNOtificationMessage(`Deleted Catalog Item : "${this.selectedItem.name}"`));
 			this.props.history.push('/');
 			this.props.history.goForward();
-		}).error((err) => {
-			this.setState({errorMessage: 'Unable to delete the Item. Reason being : ' + err.message})
+		}).catch((err) => {
+			this.props.dispatch(setErrorMessage(`Failed to delete Catalog Item : "${this.selectedItem.name}".\n\n Error Message: ${err.message}`))
 		});
 	};
 

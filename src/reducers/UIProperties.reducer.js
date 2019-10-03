@@ -3,7 +3,9 @@ import {UIPropertiesActionTypes} from 'actions/UIProperties.action.js';
 const defaultState = {
     groupOrder: 'category',
     sortOrder: '0',
-    expandedGroups: {}
+    expandedGroups: {},
+    errorMessage: '',
+    notificationMessage: ''
 };
 
 export default (state = defaultState, action = {}) => {
@@ -16,6 +18,10 @@ export default (state = defaultState, action = {}) => {
             return {...state, expandedGroups: {...state.expandedGroups, [action.payload] : true}};
         case UIPropertiesActionTypes.COLLAPSE_GROUP:
             return {...state, expandedGroups: {...state.expandedGroups, [action.payload] : false}};
+        case UIPropertiesActionTypes.SET_ERROR_MESSAGE:
+            return {...state, errorMessage: action.payload || ''};
+        case UIPropertiesActionTypes.SET_NOTIFICATION_MESSAGE:
+            return {...state, notificationMessage: action.payload || ''};
         default:
             return state;
     }

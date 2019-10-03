@@ -12,6 +12,7 @@ import Header from './components/header/Header';
 import CategoryCreateNew from './routes/categories/CategoryCreateNew';
 import CatalogItemNew from './routes/catalogItems/CatalogItemNew';
 import {addAllCategories} from "./actions/Categories.action";
+import ShowNotification from "./components/notifications/ShowNotification";
 
 @connect()
 export default class Router extends React.Component {
@@ -25,6 +26,7 @@ export default class Router extends React.Component {
 		return (
 			<div className='item-catalog-wrapper'>
 				<BrowserRouter>
+					<ShowNotification/>
 					<Header/>
 					<Switch>
 						<Route path='/category/:id/edit' component={CategoryEdit}/>

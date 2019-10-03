@@ -1,0 +1,23 @@
+.notification-wrapper {
+  .error-message-notification{
+    background-color: indianred;
+  }
+  .notification-message {
+    background-color: lightgreen;
+  }
+
+  .notif-box {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    margin: 10px;
+    padding: 5px 10px;
+    white-space: pre-line;
+    .close-wrapper {
+      cursor: pointer;
+      width: 20px;
+      position: absolute;
+      right: 20px;
+    }
+  }
+}

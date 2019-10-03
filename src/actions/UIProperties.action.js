@@ -2,7 +2,9 @@ export const UIPropertiesActionTypes = {
   CHANGE_SORTING_ORDER: 'changeSort',
   CHANGE_GROUPING_ORDER: 'changeGroup',
   EXPAND_CATEGORY: 'expandGroup',
-  COLLAPSE_GROUP: 'collapseGroup'
+  COLLAPSE_GROUP: 'collapseGroup',
+  SET_ERROR_MESSAGE: 'errorMsg',
+  SET_NOTIFICATION_MESSAGE: 'notifMsg'
 };
 
 export const changeSortingOrder = (newSortOrder) => {
@@ -19,4 +21,12 @@ export const expandGroup = (catId) => {
 
 export const collapseGroup = (catId) => {
   return {type: UIPropertiesActionTypes.COLLAPSE_GROUP, payload: catId}
+};
+
+export const setErrorMessage = (msg) => {
+  return {type: UIPropertiesActionTypes.SET_ERROR_MESSAGE, payload: msg}
+};
+
+export const setNOtificationMessage = (notifMsg) => {
+  return {type: UIPropertiesActionTypes.SET_NOTIFICATION_MESSAGE, payload: notifMsg}
 };
