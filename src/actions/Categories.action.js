@@ -27,9 +27,9 @@ export const addAllCategories = (dispatch) => {
     });
 };
 
-export const addCategory = (name, description) => {
+export const addCategory = (newCategoryData) => {
     // TODO - Send a POST Request here to get the new id for newly added category
-    return {type: CategoryActionTypes.ADD_CATEGORY, payload: {name, description, id: Math.floor(Math.random() * 10000)}};
+    return {type: CategoryActionTypes.ADD_CATEGORY, payload: newCategoryData};
 };
 
 export const removeCategory = (categoryId) => {
@@ -41,9 +41,9 @@ export const editCategory = (categoryId, newCategoryData) => {
     return {type: CategoryActionTypes.EDIT_CATEGORY, payload: {categoryId, newCategoryData}};
 };
 
-export const addItemToCategory = (categoryId, newItemData) => {
+export const addItemToCategory = (categoryId, itemToAdd) => {
     // TODO - Send a POST
-    return {type: CategoryActionTypes.ADD_ITEM_TO_CATEGORY, payload: {categoryId, itemToAdd: {...newItemData, id: Math.floor(Math.random() * 10000 + 10000)}}}
+    return {type: CategoryActionTypes.ADD_ITEM_TO_CATEGORY, payload: {categoryId, itemToAdd}}
 };
 
 export const removeItemFromCategory = (categoryId, itemId) => {

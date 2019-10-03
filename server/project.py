@@ -17,6 +17,22 @@ session = DBSession()
 
 allCatsCached = []
 
+def getCatalogItemJson (catalogItem):
+    return jsonify({
+        'name': catalogItem.name,
+        'description': catalogItem.description,
+        'categoryId': catalogItem.categoryId,
+        'id': catalogItem.id
+    })
+
+def getCategoryJson (category):
+    return jsonify({
+        'name': category.name,
+        'description': category.description,
+        'id': category.id
+    })
+
+
 # Utility Method. It queries the DB and creates an array of dictionaries
 def fillCatTableData():
     global allCatsCached
@@ -34,6 +50,37 @@ def getCategoriesData():
         fillCatTableData()
     return allCatsCached
 
+@app.route('/item/new', methods=['GET', 'POST'])
+def newItemInCategory():
+    if request.method == 'GET':
+        return render_template('index.html', categoryData=getCategoriesData())
+    elif request.method == 'POST':
+        reqData = json.loads(request.data)
+        print(reqData)
+        category = session.query(Category).filter_by(id=reqData['categoryId']).one()
+        if category:
+            print('Trying to create a new item now')
+            newItem = CatalogItem(name=reqData['name'], description=reqData['description'],
+                                  categoryId=category.id)
+            newItem.category = category
+            session.add(newItem)
+            session.commit()
+            fillCatTableData()
+            return getCatalogItemJson(newItem)
+
+@app.route('/category/new', methods=['GET', 'POST'])
+def addCategory():
+    if request.method == 'GET':
+        return render_template('index.html', categoryData=getCategoriesData())
+    elif request.method == 'POST':
+        reqData = json.loads(request.data)
+        print(reqData)
+        newCategory = Category(name=reqData['name'], description=reqData['description'])
+        session.add(newCategory)
+        session.commit()
+        fillCatTableData()
+        return getCategoryJson(newCategory)
+
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
     if request.method == 'GET':
@@ -49,7 +96,8 @@ def editCategory(category_id):
         session.add(categoryToEdit)
         session.commit()
         categoryAfterEdit = session.query(Category).filter_by(id=category_id).one()
-        return jsonify({'name': categoryAfterEdit.name, 'description': categoryAfterEdit.description})
+        fillCatTableData()
+        return getCategoryJson(categoryAfterEdit)
 
 
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
@@ -67,7 +115,8 @@ def editItem(item_id):
         session.add(itemToEdit)
         session.commit()
         itemAfterEdit = session.query(CatalogItem).filter_by(id=item_id).one()
-        return jsonify({'name': itemAfterEdit.name, 'description': itemAfterEdit.description})
+        fillCatTableData()
+        return getCatalogItemJson(itemAfterEdit)
 
 @app.route('/category/<int:category_id>/delete', methods=['GET', 'DELETE', 'POST'])
 def deleteCategoryAndItsItems(category_id):
@@ -82,6 +131,7 @@ def deleteCategoryAndItsItems(category_id):
 
         session.delete(categoryToDelete)
         session.commit()
+        fillCatTableData()
         return {}
 
 @app.route('/item/<int:item_id>/delete', methods=['GET', 'DELETE', 'POST'])
@@ -92,6 +142,7 @@ def deleteSingleCatalogItem(item_id):
         itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
         session.delete(itemToDelete)
         session.commit()
+        fillCatTableData()
         return {}
 
 @app.route('/getAllCategories')

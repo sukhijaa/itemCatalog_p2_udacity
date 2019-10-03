@@ -7,7 +7,9 @@ export const APIEndpoints = {
     DELETE_ITEM: '/item/:itemId/delete',
     GET_ALL_CATEGORIES: '/getAllCategories',
     EDIT_CATEGORY: '/category/:categoryId/edit',
-    EDIT_ITEM: '/item/:itemId/edit'
+    EDIT_ITEM: '/item/:itemId/edit',
+    NEW_CATEGORY: '/category/new',
+    NEW_ITEM: '/item/new'
 };
 
 export const buildURL = (path, pathParams = {}, queryParams = {}) => {

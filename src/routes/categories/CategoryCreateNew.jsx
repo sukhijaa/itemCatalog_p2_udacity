@@ -2,14 +2,17 @@ import React from 'react';
 import {addCategory} from "../../actions/Categories.action";
 import EditAddDeleteItem from "../../components/EditAddDeleteItem/EditAddDeleteItem";
 import {connect} from "react-redux";
+import {APIEndpoints, HTTP} from "../../utility/HTTPRequests";
 
 @connect(store => ({categories: store.categories}))
 export default class CategoryCreateNew extends React.Component {
 
     handleCategoryUpdate = (newCat, name, description) => {
-        this.props.dispatch(addCategory(name || 'New Category 1', description));
-        this.props.history.push('/');
-        this.props.history.goForward();
+        HTTP.POST(APIEndpoints.NEW_CATEGORY, {name, description}).then(res => {
+            this.props.dispatch(addCategory(res.data));
+            this.props.history.push('/');
+            this.props.history.goForward();
+        });
     };
 
     render() {

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {getAllCategoriesForDD} from '../categories/Categories.utils';
 import {addItemToCategory} from '../../actions/Categories.action';
 import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
+import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
 
 @connect(store => ({
     categories: store.categories
@@ -10,9 +11,11 @@ import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
 export default class CatalogItemNew extends React.Component {
 
     handleItemUpdate = (newCat, name, description) => {
-        this.props.dispatch(addItemToCategory(newCat || 'New Item 1', {name, description}));
-        this.props.history.push('/');
-        this.props.history.goForward();
+        HTTP.POST(APIEndpoints.NEW_ITEM, {name: name || 'New Item 1', description, categoryId: parseInt(newCat)}).then(res => {
+           this.props.dispatch(addItemToCategory(newCat, res.data));
+            this.props.history.push('/');
+            this.props.history.goForward();
+        });
     };
 
     render() {

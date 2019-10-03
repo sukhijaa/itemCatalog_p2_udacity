@@ -24,6 +24,7 @@ export default (state = {}, action = {}) => {
 
             const allCategories = {...state};
             const selectedCat = allCategories[categoryId];
+            selectedCat.catalogItems = selectedCat.catalogItems || {}
             selectedCat.catalogItems[itemToAdd.id] = itemToAdd;
             allCategories[categoryId] = {...selectedCat};
             return allCategories;
