@@ -10,6 +10,15 @@ import {setErrorMessage, setNOtificationMessage} from "../../actions/UIPropertie
 }))
 export default class ShowNotification extends React.PureComponent{
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.errorMessage !== prevProps.errorMessage && this.props.errorMessage) {
+            setTimeout(this.handleErrorClear, 5000);
+        }
+        if (this.props.notification !== prevProps.notification && this.props.notification) {
+            setTimeout(this.handleNotificationClear, 5000);
+        }
+    }
+
     handleNotificationClear =  () => {
         this.props.dispatch(setNOtificationMessage(''))
     };
