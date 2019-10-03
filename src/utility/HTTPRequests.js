@@ -6,6 +6,8 @@ export const APIEndpoints = {
     DELETE_CATEGORY: '/category/:categoryId/delete',
     DELETE_ITEM: '/item/:itemId/delete',
     GET_ALL_CATEGORIES: '/getAllCategories',
+    EDIT_CATEGORY: '/category/:categoryId/edit',
+    EDIT_ITEM: '/item/:itemId/edit'
 };
 
 export const buildURL = (path, pathParams = {}, queryParams = {}) => {
@@ -34,8 +36,8 @@ export const HTTP = {
     DELETE: (url) => {
         return axios.delete(appendHost(url))
     },
-    POST: (url, data) => {
-        return axios.post(appendHost(url), data)
+    POST: (url, body) => {
+        return axios.post(appendHost(url), body)
     },
     GET: (url) => {
         return axios.get(appendHost(url))

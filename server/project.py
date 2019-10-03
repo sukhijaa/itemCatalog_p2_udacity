@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from catalogDBSetup import Category, CatalogItem, Base
 import random
 import string
+import json
 
 app = Flask(__name__)
 
@@ -38,7 +39,35 @@ def editCategory(category_id):
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
+        reqData = json.loads(request.data)
+        print(reqData)
+        categoryToEdit = session.query(Category).filter_by(id=category_id).one()
+        if (reqData['name']):
+            categoryToEdit.name = reqData['name']
+        if (reqData['description']):
+            categoryToEdit.description = reqData['description']
+        session.add(categoryToEdit)
+        session.commit()
+        categoryAfterEdit = session.query(Category).filter_by(id=category_id).one()
+        return jsonify({'name': categoryAfterEdit.name, 'description': categoryAfterEdit.description})
+
+
+@app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
+def editItem(item_id):
+    if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
+    elif request.method == 'POST':
+        reqData = json.loads(request.data)
+        print(reqData)
+        itemToEdit = session.query(CatalogItem).filter_by(id=item_id).one()
+        if (reqData['name']):
+            itemToEdit.name = reqData['name']
+        if (reqData['description']):
+            itemToEdit.description = reqData['description']
+        session.add(itemToEdit)
+        session.commit()
+        itemAfterEdit = session.query(CatalogItem).filter_by(id=item_id).one()
+        return jsonify({'name': itemAfterEdit.name, 'description': itemAfterEdit.description})
 
 @app.route('/category/<int:category_id>/delete', methods=['GET', 'DELETE', 'POST'])
 def deleteCategoryAndItsItems(category_id):

@@ -23,6 +23,7 @@ export const addAllCategories = (dispatch) => {
         dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: allCategories})
     }).catch(err => {
        dispatch({type: CategoryActionTypes.ADD_ALL_CATEGORIES, payload: defaultArray});
+       console.error(err);
     });
 };
 

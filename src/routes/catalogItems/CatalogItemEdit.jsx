@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {getCategoryObjForItemId} from './CatalogItem.utils';
 import {getAllCategoriesForDD} from '../categories/Categories.utils';
 import {editItemInCategory} from 'actions/Categories.action';
+import {APIEndpoints, buildURL, HTTP} from "../../utility/HTTPRequests";
 
 @connect(store => ({
 	categories: store.categories
@@ -18,9 +19,14 @@ export default class CatalogItemEdit extends React.Component {
 	}
 
 	handleItemUpdate = (newCat, name, description) => {
-		this.props.dispatch(editItemInCategory(this.selectedCategory.id, this.selectedItem.id, {name: name || this.selectedItem.name, description}));
-		this.props.history.push('/');
-		this.props.history.goForward();
+		HTTP.POST(
+			buildURL(APIEndpoints.EDIT_ITEM, {itemId: this.selectedItem.id}),
+			{name: name || 'New Item 1', description}).then(res => {
+
+			this.props.dispatch(editItemInCategory(this.selectedCategory.id, this.selectedItem.id, res.data));
+			this.props.history.push('/');
+			this.props.history.goForward();
+		});
 	};
 
 	render() {

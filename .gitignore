@@ -3,6 +3,9 @@
 /server/.vagrant
 /server/static/index.html
 
+/**/*.db
+/**/*.pyc
+
 # dependencies
 /node_modules
 
