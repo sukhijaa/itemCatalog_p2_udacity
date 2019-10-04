@@ -242,7 +242,7 @@ def returnJSONOfAllCatsAndItems():
 
 @app.route('/')
 @app.route('/items')
-@app.route('/item')
+@app.route('/categories')
 @app.route('/login')
 def showAllItems():
     return render_template('index.html', categoryData=getCategoriesData())

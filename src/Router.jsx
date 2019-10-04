@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, withRouter, Redirect} from 'react-router-dom';
 import Categories from './routes/categories/Categories';
 import CategoryEdit from './routes/categories/CategoryEdit';
 import CategoryDelete from './routes/categories/CategoryDelete';
@@ -14,7 +14,9 @@ import ShowNotification from './components/notifications/ShowNotification';
 import EntityDetails from './components/entityDetails/EntityDetails';
 import Login from './routes/login/Login';
 
-@connect()
+@connect(store => ({
+	isLoggedIn: store.loginData.isLoggedIn,
+}))
 export default class Router extends React.Component {
 
 	componentDidMount() {
@@ -28,6 +30,7 @@ export default class Router extends React.Component {
 				<BrowserRouter>
 					<ShowNotification/>
 					<Header/>
+					<RedirectManager isLoggedIn={this.props.isLoggedIn}/>
 					<Switch>
 						<Route path='/login' component={Login}/>
 						<Route path='/category/:id/edit' component={CategoryEdit}/>
@@ -45,3 +48,24 @@ export default class Router extends React.Component {
 		);
 	}
 }
+
+const RedirectManager = withRouter(({history, isLoggedIn}) => {
+	console.log(history);
+	const currentPath = ((history.location || {}).pathname || '');
+
+	const isItemPath = currentPath.startsWith('/item');
+	const isCategoryPath = currentPath.startsWith('/category');
+
+	const isEditPath = currentPath.includes('edit') || currentPath.includes('delete') || currentPath.includes('new');
+
+	if (isEditPath && (isItemPath || isCategoryPath) && !isLoggedIn) {
+	    return (
+			<Redirect to='/login'/>
+		);
+	} else if (!isItemPath && !isCategoryPath && currentPath !== '/' && currentPath !== '/login') {
+		return (
+			<Redirect to='/'/>
+		);
+	}
+	return null;
+});

@@ -7,6 +7,7 @@ import {collapseGroup, expandGroup} from '../../actions/UIProperties.action';
 
 @connect(store => ({
 	expandedGroups: store.uiProperties.expandedGroups,
+	isLoggedIn: store.loginData.isLoggedIn
 }))
 export default class CategoryDetails extends React.Component {
 	static propTypes = {
@@ -39,7 +40,7 @@ export default class CategoryDetails extends React.Component {
 	};
 
 	render() {
-		const {categoryItem, linkPrefix, category, expandable, expandedGroups} = this.props;
+		const {categoryItem, linkPrefix, category, expandable, expandedGroups, isLoggedIn} = this.props;
 		const currentStatus = expandable ? expandedGroups[categoryItem.id] : false;
 		return (
 			<div className='category-detail-wrapper'>
@@ -67,12 +68,17 @@ export default class CategoryDetails extends React.Component {
 							<div className='category-type-for-item'>{` | Category : ${category}`}</div>
 							: null
 					}
-					<div className='category-item-edit-link'>
-						<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
-					</div>
-					<div className='category-item-delete-link'>
-						<Link to={`/${linkPrefix}/${categoryItem.id}/delete`}>Delete</Link>
-					</div>
+					{
+						isLoggedIn ?
+							<React.Fragment>
+								<div className='category-item-edit-link'>
+									<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
+								</div>
+								<div className='category-item-delete-link'>
+									<Link to={`/${linkPrefix}/${categoryItem.id}/delete`}>Delete</Link>
+								</div>
+							</React.Fragment> : null
+					}
 				</div>
 				{
 					currentStatus ?

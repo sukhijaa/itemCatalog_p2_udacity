@@ -8,6 +8,7 @@ import './EntityDetails.scss';
 
 @connect(store => ({
 	categories: store.categories || [],
+	isLoggedIn: store.loginData.isLoggedIn,
 }))
 export default class EntityDetails extends React.Component {
     static propTypes = {
@@ -112,12 +113,15 @@ export default class EntityDetails extends React.Component {
     					</div>  : null
     			}
 
-    			<div className='entity-footer'>
-    				<Link to={`/${this.isCategory ? 'category' : 'item'}/${currentEntity.id}/edit`}>
-    					<div className='edit-entity'>Edit</div>
-    				</Link>
-    				<div className='cancel-entity' onClick={this.props.history.goBack}>Back</div>
-    			</div>
+    			{
+    				this.props.isLoggedIn ?
+    					<div className='entity-footer'>
+    						<Link to={`/${this.isCategory ? 'category' : 'item'}/${currentEntity.id}/edit`}>
+    							<div className='edit-entity'>Edit</div>
+    						</Link>
+    						<div className='cancel-entity' onClick={this.props.history.goBack}>Back</div>
+    					</div> : null
+    			}
     		</div>
     	);
     }
