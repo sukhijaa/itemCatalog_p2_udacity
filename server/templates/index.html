@@ -3,15 +3,11 @@
     <head>
         <meta charset="UTF-8"
               http-equiv="Content-Security-Policy"
-              content="default-src 'self'; font-src 'self' data: fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+              content="font-src 'self' data: fonts.gstatic.com; script-src 'self' https://apis.google.com 'unsafe-eval';">
         <title>Item Catalog</title>
     <link href="/static/main.css" rel="stylesheet"></head>
     <body>
         <div id="app"/>
-        <script>
-            var catData = JSON.parse('{{ categoryData | tojson | safe}}')
-            window.allCategoriesData = catData || []
-        </script>
         <script type="text/javascript" src="/static/bundle.js"></script>
     </body>
 </html>

@@ -1,10 +1,18 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session as login_session
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from catalogDBSetup import Category, CatalogItem, Base
+from catalogDBSetup import Category, CatalogItem, Base, User
 import random
 import string
 import json
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+from flask import make_response
+import requests
+from flask_httpauth import HTTPBasicAuth
+
+auth = HTTPBasicAuth()
 
 app = Flask(__name__)
 
@@ -62,6 +70,69 @@ def getCategoriesData():
     if len(allCatsCached) == 0:
         fillCatTableData()
     return allCatsCached
+
+
+@app.route('/loginUser/<provider>', methods=['POST'])
+def loginUser(provider):
+    # STEP 1 - Parse the auth code
+    requestData = json.loads(request.data)
+    print (requestData)
+    auth_code = requestData['access_token']
+    print "Step 1 - Complete, received auth code %s" % auth_code
+    if provider == 'google':
+        # STEP 2 - Exchange for a token
+        try:
+            # Upgrade the authorization code into a credentials object
+            oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+            oauth_flow.redirect_uri = 'postmessage'
+            credentials = oauth_flow.step2_exchange(auth_code)
+        except FlowExchangeError as e:
+            print(str(e))
+            response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+
+        # Check that the access token is valid.
+        access_token = credentials.access_token
+        url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+        h = httplib2.Http()
+        result = json.loads(h.request(url, 'GET')[1])
+        # If there was an error in the access token info, abort.
+        if result.get('error') is not None:
+            print('Authorization code is not valid')
+            print('Error %s' %result.get('error'))
+            response = make_response(json.dumps(result.get('error')), 500)
+            response.headers['Content-Type'] = 'application/json'
+
+        print "Step 2 Complete! Access Token : %s " % credentials.access_token
+
+        h = httplib2.Http()
+        userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+        params = {'access_token': credentials.access_token, 'alt': 'json'}
+        answer = requests.get(userinfo_url, params=params)
+
+        data = answer.json()
+
+        name = data['name']
+        picture = data['picture']
+        email = data['email']
+
+        # see if user exists, if it doesn't make a new one
+        user = session.query(User).filter_by(email=email).first()
+        if not user:
+            user = User(username=name, picture=picture, email=email)
+            session.add(user)
+            session.commit()
+
+        # STEP 4 - Make token
+        token = user.generate_auth_token(600)
+
+        # STEP 5 - Send back token to the client
+        return jsonify({'token': token.decode('ascii')})
+
+        # return jsonify({'token': token.decode('ascii'), 'duration': 600})
+    else:
+        return 'Unrecoginized Provider'
 
 
 @app.route('/item/new', methods=['GET', 'POST'])
@@ -172,6 +243,7 @@ def returnJSONOfAllCatsAndItems():
 @app.route('/')
 @app.route('/items')
 @app.route('/item')
+@app.route('/login')
 def showAllItems():
     return render_template('index.html', categoryData=getCategoriesData())
 

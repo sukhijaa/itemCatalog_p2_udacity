@@ -2,8 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import './Header.scss';
-import {LoginActionTypes} from '../../reducers/LoginReducer';
 import {Link} from 'react-router-dom';
+import {logUserOut} from '../../actions/Login.actions';
 
 @connect((store) => ({
 	isLoggedIn: store.loginData.isLoggedIn,
@@ -30,12 +30,8 @@ export default class Header extends React.Component {
     	showDD: false,
     };
 
-    logUserIn  = () => {
-    	this.props.dispatch({type: LoginActionTypes.LOG_USER_IN});
-    };
-
     logUserOut = () => {
-    	this.props.dispatch({type: LoginActionTypes.LOG_USER_OUT});
+    	this.props.dispatch(logUserOut());
     };
 
 	toggleShowDD = () => {
@@ -68,7 +64,7 @@ export default class Header extends React.Component {
     							}
 
     						</div> :
-    						<span className='cursor-pointer' onClick={this.logUserIn}>LOGIN</span>
+							<Link to='/login'><span className='cursor-pointer'>LOGIN</span></Link>
     				}
     			</div>
     		</div>

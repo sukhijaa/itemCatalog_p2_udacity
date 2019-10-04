@@ -10,6 +10,7 @@ export const APIEndpoints = {
 	EDIT_ITEM: '/item/:itemId/edit',
 	NEW_CATEGORY: '/category/new',
 	NEW_ITEM: '/item/new',
+	LOG_USER_IN: '/loginUser/google'
 };
 
 export const buildURL = (path, pathParams = {}, queryParams = {}) => {

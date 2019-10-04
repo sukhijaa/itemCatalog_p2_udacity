@@ -5,6 +5,7 @@ export const UIPropertiesActionTypes = {
 	COLLAPSE_GROUP: 'collapseGroup',
 	SET_ERROR_MESSAGE: 'errorMsg',
 	SET_NOTIFICATION_MESSAGE: 'notifMsg',
+	SET_USER_IMAGE: 'setUserImg'
 };
 
 export const changeSortingOrder = (newSortOrder) => {
@@ -29,4 +30,8 @@ export const setErrorMessage = (msg) => {
 
 export const setNOtificationMessage = (notifMsg) => {
 	return {type: UIPropertiesActionTypes.SET_NOTIFICATION_MESSAGE, payload: notifMsg};
+};
+
+export const setUserImage = (imageURL) => {
+	return {type: UIPropertiesActionTypes.SET_USER_IMAGE, payload: imageURL};
 };
