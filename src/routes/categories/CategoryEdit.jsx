@@ -4,6 +4,8 @@ import EditAddDeleteItem from '../../components/EditAddDeleteItem/EditAddDeleteI
 import {editCategory} from '../../actions/Categories.action';
 import {APIEndpoints, buildURL, HTTP} from '../../utility/HTTPRequests';
 import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
+import {performUserOperationsOnServerFailure} from '../../actions/Login.actions';
+import {getErrorMessageOutOfErrorObj} from './Categories.utils';
 
 @connect(store => ({categories: store.categories}))
 export default class CategoryEdit extends React.Component {
@@ -17,7 +19,8 @@ export default class CategoryEdit extends React.Component {
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch(err => {
-			this.props.dispatch(setErrorMessage(`Failed to update Category : ${name} \n\nError Message: ${err.message}`));
+			this.props.dispatch(performUserOperationsOnServerFailure(err));
+			this.props.dispatch(setErrorMessage(`Failed to update Category : ${name} \n\nError Message: ${getErrorMessageOutOfErrorObj(err)}`));
 		});
 	};
 

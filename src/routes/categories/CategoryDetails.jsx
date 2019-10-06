@@ -7,7 +7,7 @@ import {collapseGroup, expandGroup} from '../../actions/UIProperties.action';
 
 @connect(store => ({
 	expandedGroups: store.uiProperties.expandedGroups,
-	isLoggedIn: store.loginData.isLoggedIn
+	isLoggedIn: store.loginData.isLoggedIn,
 }))
 export default class CategoryDetails extends React.Component {
 	static propTypes = {
@@ -88,7 +88,9 @@ export default class CategoryDetails extends React.Component {
 									const item = categoryItem.catalogItems[itemId];
 									return (
 										<CategoryDetails
+											key={itemId}
 											categoryItem={item}
+											isLoggedIn={isLoggedIn}
 											expandable={false}
 											linkPrefix='item'/>
 									);

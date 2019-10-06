@@ -2,10 +2,11 @@ import React from 'react';
 import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
 import {connect} from 'react-redux';
 import {getCategoryObjForItemId} from './CatalogItem.utils';
-import {getAllCategoriesForDD} from '../categories/Categories.utils';
+import {getAllCategoriesForDD, getErrorMessageOutOfErrorObj} from '../categories/Categories.utils';
 import {editItemInCategory} from 'actions/Categories.action';
 import {APIEndpoints, buildURL, HTTP} from '../../utility/HTTPRequests';
 import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
+import {performUserOperationsOnServerFailure} from '../../actions/Login.actions';
 
 @connect(store => ({
 	categories: store.categories,
@@ -29,7 +30,8 @@ export default class CatalogItemEdit extends React.Component {
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch(err => {
-			this.props.dispatch(setErrorMessage(`Failed to update Catalog Item.\n\nError Message: ${err.message}`));
+			this.props.dispatch(performUserOperationsOnServerFailure(err));
+			this.props.dispatch(setErrorMessage(`Failed to update Catalog Item.\n\nError Message: ${getErrorMessageOutOfErrorObj(err)}`));
 		});
 	};
 

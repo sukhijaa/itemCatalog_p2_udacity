@@ -50,7 +50,6 @@ export default class Router extends React.Component {
 }
 
 const RedirectManager = withRouter(({history, isLoggedIn}) => {
-	console.log(history);
 	const currentPath = ((history.location || {}).pathname || '');
 
 	const isItemPath = currentPath.startsWith('/item');

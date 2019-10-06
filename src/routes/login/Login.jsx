@@ -20,7 +20,6 @@ export default class Login extends  React.Component {
 	};
 
 	onLoginFailure = (errorObj) => {
-		console.log('Login Failed', errorObj);
 		this.props.dispatch(setErrorMessage('Sorry. Unable to Log you in. Please try again'));
 	};
 

@@ -18,3 +18,14 @@ export const logUserOut = () => {
 
 	return {type: LoginActionTypes.LOG_USER_OUT};
 };
+
+export const performUserOperationsOnServerFailure = (error) => {
+	const {response} = error;
+	if (response) {
+		if (response.status === 444) {
+			// USer needs to logout
+			return logUserOut();
+		}
+	}
+	return {type: 'randomUselessText'};
+};

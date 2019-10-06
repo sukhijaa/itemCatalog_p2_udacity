@@ -1,10 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {getAllCategoriesForDD} from '../categories/Categories.utils';
+import {getAllCategoriesForDD, getErrorMessageOutOfErrorObj} from '../categories/Categories.utils';
 import {addItemToCategory} from '../../actions/Categories.action';
 import EditAddDeleteItem from 'components/EditAddDeleteItem/EditAddDeleteItem';
 import {APIEndpoints, HTTP} from '../../utility/HTTPRequests';
 import {setErrorMessage, setNOtificationMessage} from '../../actions/UIProperties.action';
+import {performUserOperationsOnServerFailure} from '../../actions/Login.actions';
 
 @connect(store => ({
 	categories: store.categories,
@@ -22,7 +23,8 @@ export default class CatalogItemNew extends React.Component {
     		this.props.history.push('/');
     		this.props.history.goForward();
     	}).catch(err => {
-    		this.props.dispatch(setErrorMessage(`Failed to add new Catalog Item "${name}".\n\n Error Message: ${err.message}`));
+    		this.props.dispatch(performUserOperationsOnServerFailure(err));
+    		this.props.dispatch(setErrorMessage(`Failed to add new Catalog Item "${name}".\n\n Error Message: ${getErrorMessageOutOfErrorObj(err)}`));
     	});
     };
 

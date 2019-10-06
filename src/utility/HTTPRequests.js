@@ -37,10 +37,10 @@ const appendHost = (url) => {
 
 export const HTTP = {
 	DELETE: (url) => {
-		return axios.delete(appendHost(url));
+		return axios.post(appendHost(url), {token: sessionStorage.token || ''});
 	},
 	POST: (url, body) => {
-		return axios.post(appendHost(url), body);
+		return axios.post(appendHost(url), {token: sessionStorage.token || '', body});
 	},
 	GET: (url) => {
 		return axios.get(appendHost(url));

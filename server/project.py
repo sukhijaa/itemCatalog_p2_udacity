@@ -76,6 +76,7 @@ def getCategoriesData():
 def loginUser(provider):
     # STEP 1 - Parse the auth code
     requestData = json.loads(request.data)
+    requestData = requestData['body']
     print (requestData)
     auth_code = requestData['access_token']
     print "Step 1 - Complete, received auth code %s" % auth_code
@@ -141,6 +142,13 @@ def newItemInCategory():
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
         reqData = json.loads(request.data)
+        token = reqData['token']
+        reqData = reqData['body']
+        userEditing = User.verify_auth_token(token)
+        if userEditing is None:
+            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         print(reqData)
         category = session.query(Category).filter_by(id=reqData['categoryId']).one()
         if category:
@@ -160,6 +168,13 @@ def addCategory():
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
         reqData = json.loads(request.data)
+        token = reqData['token']
+        reqData = reqData['body']
+        userEditing = User.verify_auth_token(token)
+        if userEditing is None:
+            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         print(reqData)
         newCategory = Category(name=reqData['name'], description=reqData['description'])
         session.add(newCategory)
@@ -174,6 +189,13 @@ def editCategory(category_id):
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
         reqData = json.loads(request.data)
+        token = reqData['token']
+        reqData = reqData['body']
+        userEditing = User.verify_auth_token(token)
+        if userEditing is None:
+            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         print(reqData)
         categoryToEdit = session.query(Category).filter_by(id=category_id).one()
         if reqData['name']:
@@ -193,6 +215,13 @@ def editItem(item_id):
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
         reqData = json.loads(request.data)
+        token = reqData['token']
+        reqData = reqData['body']
+        userEditing = User.verify_auth_token(token)
+        if userEditing is None:
+            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         print(reqData)
         itemToEdit = session.query(CatalogItem).filter_by(id=item_id).one()
         if reqData['name']:
@@ -206,11 +235,18 @@ def editItem(item_id):
         return getCatalogItemJson(itemAfterEdit)
 
 
-@app.route('/category/<int:category_id>/delete', methods=['GET', 'DELETE', 'POST'])
+@app.route('/category/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategoryAndItsItems(category_id):
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     else:
+        reqData = json.loads(request.data)
+        token = reqData['token']
+        userEditing = User.verify_auth_token(token)
+        if userEditing is None:
+            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         categoryToDelete = session.query(Category).filter_by(id=category_id).one()
         itemsForCategory = session.query(CatalogItem).filter(CatalogItem.categoryId == categoryToDelete.id)
         for item in itemsForCategory:
@@ -223,11 +259,18 @@ def deleteCategoryAndItsItems(category_id):
         return {}
 
 
-@app.route('/item/<int:item_id>/delete', methods=['GET', 'DELETE', 'POST'])
+@app.route('/item/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteSingleCatalogItem(item_id):
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     else:
+        reqData = json.loads(request.data)
+        token = reqData['token']
+        userEditing = User.verify_auth_token(token)
+        if userEditing is None:
+            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
         session.delete(itemToDelete)
         session.commit()

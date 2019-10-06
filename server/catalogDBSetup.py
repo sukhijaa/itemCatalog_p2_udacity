@@ -67,12 +67,18 @@ class User(Base):
     def verify_auth_token(token):
         s = Serializer(secret_key)
         try:
+            print('In verify token')
             data = s.loads(token)
-        except SignatureExpired:
+            print(data)
+            print(str(data))
+        except SignatureExpired as se:
             # Valid Token, but expired
+            print('Session expired. Asking user to re-login')
+            print(se)
             return None
-        except BadSignature:
+        except BadSignature as bs:
             # Invalid Token
+            print('Bad Signature. Asking user to re-login')
             return None
         user_id = data['id']
         return user_id

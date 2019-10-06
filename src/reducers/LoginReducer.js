@@ -1,4 +1,6 @@
 import {LoginActionTypes} from '../actions/Login.actions';
+import {CategoryActionTypes} from "../actions/Categories.action";
+
 
 const isUserLoggedIn = () => {
 	return sessionStorage.token ? (new Date().getTime() - sessionStorage.tokenTime) <= 600000 : false;
@@ -15,6 +17,14 @@ export default (state = defaultState, action = {}) => {
 			return {...state, isLoggedIn: true, userName: action.payload.username};
 		case LoginActionTypes.LOG_USER_OUT:
 			return {...state, isLoggedIn: false, userName: ''};
+		case CategoryActionTypes.ADD_CATEGORY:
+		case CategoryActionTypes.ADD_ITEM_TO_CATEGORY:
+		case CategoryActionTypes.EDIT_CATEGORY:
+		case CategoryActionTypes.EDIT_ITEM_IN_CATEGORY:
+		case CategoryActionTypes.REMOVE_CATEGORY:
+		case CategoryActionTypes.REMOVE_ITEM_FROM_CATEGORY:
+			sessionStorage.tokenTime = new Date().getTime();
+			return state;
 		default:
 			return state;
 	}

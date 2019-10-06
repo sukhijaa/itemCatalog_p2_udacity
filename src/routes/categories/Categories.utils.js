@@ -9,3 +9,11 @@ export const getAllCategoriesForDD = (categories) => {
 		return {label: cat.name, value: cat.id + ''};
 	});
 };
+
+export const getErrorMessageOutOfErrorObj = (err) => {
+	let errMsg = err.message;
+	if (err.response && err.response.data && typeof err.response.data === 'string' && err.response.data.length < 300) {
+		errMsg = err.response.data;
+	}
+	return errMsg;
+};
