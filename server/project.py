@@ -26,7 +26,7 @@ session = DBSession()
 allCatsCached = []
 
 
-def getCatalogItemJson (catalogItem):
+def getCatalogItemJson(catalogItem):
     return jsonify({
         'name': catalogItem.name,
         'description': catalogItem.description,
@@ -35,7 +35,7 @@ def getCatalogItemJson (catalogItem):
     })
 
 
-def getCategoryJson (category):
+def getCategoryJson(category):
     return jsonify({
         'name': category.name,
         'description': category.description,
@@ -77,10 +77,9 @@ def loginUser(provider):
     # STEP 1 - Parse the auth code
     requestData = json.loads(request.data)
     requestData = requestData['body']
-    print (requestData)
-    auth_code = requestData['access_token']
-    print "Step 1 - Complete, received auth code %s" % auth_code
     if provider == 'google':
+        auth_code = requestData['access_token']
+        print "Step 1 - Complete, received auth code %s" % auth_code
         # STEP 2 - Exchange for a token
         try:
             # Upgrade the authorization code into a credentials object
@@ -101,7 +100,7 @@ def loginUser(provider):
         # If there was an error in the access token info, abort.
         if result.get('error') is not None:
             print('Authorization code is not valid')
-            print('Error %s' %result.get('error'))
+            print('Error %s' % result.get('error'))
             response = make_response(json.dumps(result.get('error')), 500)
             response.headers['Content-Type'] = 'application/json'
 
@@ -132,6 +131,34 @@ def loginUser(provider):
         return jsonify({'token': token.decode('ascii')})
 
         # return jsonify({'token': token.decode('ascii'), 'duration': 600})
+    elif provider == 'userInput':
+        email = requestData['email']
+        password = requestData['password']
+
+        if email is None or password is None:
+            print "Missing Arguments"
+            return jsonify('Missing Arguments. '
+                           'Please enter a valid email and password. Password is greater than 6 chars.'), 400
+
+        if session.query(User).filter_by(email=email).first() is not None:
+            print "existing user"
+            user = session.query(User).filter_by(email=email).first()
+            if not user.verify_password(password):
+                print('Invalid Username / Password for %s' % email)
+                return jsonify('Email Id and Password don\'t match. Please try again.'), 445
+            else:
+                messageToSend = 'Login Successful. Enjoy!!'
+                print('Login successful')
+        else:
+            print('Creating a new user : %s' % email)
+            user = User(email=email, username=email)
+            user.hash_password(password)
+            session.add(user)
+            session.commit()
+            messageToSend = 'Created a new User. Please update your name in Profile Section'
+            print('User created successfully')
+        token = user.generate_auth_token(600)
+        return jsonify({'token': token.decode('ascii'), 'message': messageToSend})
     else:
         return 'Unrecoginized Provider'
 

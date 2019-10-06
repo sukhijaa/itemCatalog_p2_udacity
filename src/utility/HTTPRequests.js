@@ -10,7 +10,8 @@ export const APIEndpoints = {
 	EDIT_ITEM: '/item/:itemId/edit',
 	NEW_CATEGORY: '/category/new',
 	NEW_ITEM: '/item/new',
-	LOG_USER_IN: '/loginUser/google'
+	LOG_USER_IN: '/loginUser/google',
+	LOG_USER_CREDENTIALS: '/loginUser/userInput'
 };
 
 export const buildURL = (path, pathParams = {}, queryParams = {}) => {
@@ -39,8 +40,8 @@ export const HTTP = {
 	DELETE: (url) => {
 		return axios.post(appendHost(url), {token: sessionStorage.token || ''});
 	},
-	POST: (url, body) => {
-		return axios.post(appendHost(url), {token: sessionStorage.token || '', body});
+	POST: (url, body, needToken = true) => {
+		return axios.post(appendHost(url), needToken ? {token: sessionStorage.token || '', body} : {body});
 	},
 	GET: (url) => {
 		return axios.get(appendHost(url));
