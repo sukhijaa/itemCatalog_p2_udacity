@@ -41,8 +41,8 @@ export default class Login extends  React.Component {
 	handleLoginClick = () => {
 		const {email, password} = this.state;
 		HTTP.POST(APIEndpoints.LOG_USER_CREDENTIALS, {email, password}, false).then(res => {
-			this.props.dispatch(logUserIn(res.data.token, email));
-			this.props.dispatch(setNOtificationMessage(res.data.message || `Welcome ${email}`));
+			this.props.dispatch(logUserIn(res.data.token, res.data.username));
+			this.props.dispatch(setNOtificationMessage(res.data.message || `Welcome ${res.data.username}`));
 			this.props.history.goBack();
 		}).catch(this.onLoginFailure);
 	};

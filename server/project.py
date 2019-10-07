@@ -158,9 +158,35 @@ def loginUser(provider):
             messageToSend = 'Created a new User. Please update your name in Profile Section'
             print('User created successfully')
         token = user.generate_auth_token(600)
-        return jsonify({'token': token.decode('ascii'), 'message': messageToSend})
+        return jsonify({'token': token.decode('ascii'), 'message': messageToSend, 'username': user.username})
     else:
         return 'Unrecoginized Provider'
+
+
+@app.route('/profile/update', methods=['POST'])
+def updateUserInfo():
+    reqData = json.loads(request.data)
+    token = reqData['token']
+    reqData = reqData['body']
+    userEditing = User.verify_auth_token(token)
+    if userEditing is None:
+        response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    print(reqData)
+    user = session.query(User).filter_by(id=userEditing).first()
+    if user is None:
+        response = make_response(json.dumps('User not found. Please re-login or Create a New User'), 444)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    if reqData['username']:
+        user.username = reqData['username']
+    if reqData['password']:
+        user.hash_password(reqData['password'])
+    session.add(user)
+    session.commit()
+    print('User info Updated')
+    return 'User info updated successfully'
 
 
 @app.route('/item/new', methods=['GET', 'POST'])

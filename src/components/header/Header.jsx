@@ -58,6 +58,7 @@ export default class Header extends React.Component {
     										<div className='login-dd-tip-triangle'/>
     										<div className='login-dd-content-wrapper'>
 												<Link to='/category/new' className='login-dd-list-item'>Add Category</Link>
+												<Link to='/profile' className='login-dd-list-item'>Profile</Link>
     											<div className='login-dd-list-item' onClick={this.logUserOut}>Logout</div>
     										</div>
     									</div> : null

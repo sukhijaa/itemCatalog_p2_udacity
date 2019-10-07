@@ -1,5 +1,5 @@
 import {LoginActionTypes} from '../actions/Login.actions';
-import {CategoryActionTypes} from "../actions/Categories.action";
+import {CategoryActionTypes} from '../actions/Categories.action';
 
 
 const isUserLoggedIn = () => {

@@ -11,7 +11,8 @@ export const APIEndpoints = {
 	NEW_CATEGORY: '/category/new',
 	NEW_ITEM: '/item/new',
 	LOG_USER_IN: '/loginUser/google',
-	LOG_USER_CREDENTIALS: '/loginUser/userInput'
+	LOG_USER_CREDENTIALS: '/loginUser/userInput',
+	UPDATE_PROFILE_INFO: '/profile/update',
 };
 
 export const buildURL = (path, pathParams = {}, queryParams = {}) => {

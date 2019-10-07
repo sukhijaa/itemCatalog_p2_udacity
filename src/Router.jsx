@@ -13,6 +13,7 @@ import {addAllCategories} from './actions/Categories.action';
 import ShowNotification from './components/notifications/ShowNotification';
 import EntityDetails from './components/entityDetails/EntityDetails';
 import Login from './routes/login/Login';
+import Profile from './routes/profile/Profile';
 
 @connect(store => ({
 	isLoggedIn: store.loginData.isLoggedIn,
@@ -33,6 +34,7 @@ export default class Router extends React.Component {
 					<RedirectManager isLoggedIn={this.props.isLoggedIn}/>
 					<Switch>
 						<Route path='/login' component={Login}/>
+						<Route path='/profile' component={Profile}/>
 						<Route path='/category/:id/edit' component={CategoryEdit}/>
 						<Route path='/category/:id/delete' component={CategoryDelete}/>
 						<Route path='/category/new' component={CategoryCreateNew}/>
@@ -54,14 +56,16 @@ const RedirectManager = withRouter(({history, isLoggedIn}) => {
 
 	const isItemPath = currentPath.startsWith('/item');
 	const isCategoryPath = currentPath.startsWith('/category');
+	const isProfilePath = currentPath === '/profile';
 
-	const isEditPath = currentPath.includes('edit') || currentPath.includes('delete') || currentPath.includes('new');
+	const isEditPath = currentPath.includes('edit') || currentPath.includes('delete')
+		|| currentPath.includes('new') || isProfilePath;
 
-	if (isEditPath && (isItemPath || isCategoryPath) && !isLoggedIn) {
+	if (isEditPath && (isItemPath || isCategoryPath || isProfilePath) && !isLoggedIn) {
 	    return (
 			<Redirect to='/login'/>
 		);
-	} else if (!isItemPath && !isCategoryPath && currentPath !== '/' && currentPath !== '/login') {
+	} else if (!isItemPath && !isCategoryPath && currentPath !== '/' && !['/login', '/profile'].includes(currentPath)) {
 		return (
 			<Redirect to='/'/>
 		);
