@@ -9,13 +9,28 @@ import {setErrorMessage, setNOtificationMessage} from '../../actions/UIPropertie
 	notification: store.uiProperties.notificationMessage,
 }))
 export default class ShowNotification extends React.PureComponent {
+	constructor(props) {
+		super(props);
 
-	componentDidUpdate(prevProps, prevState, snapshot) {
+		this.clearTimeoutERROR = '';
+		this.clearTimeoutNOTIF = '';
+	}
+
+	clearTimeoutIfStringPresent = (string, selector = 'ERROR') => {
+		const timeoutSelector = this[`clearTimeout${selector.toUpperCase()}`];
+		if (string) {
+			clearTimeout(timeoutSelector);
+		}
+	}
+
+	componentDidUpdate(prevProps) {
 		if (this.props.errorMessage !== prevProps.errorMessage && this.props.errorMessage) {
-			setTimeout(this.handleErrorClear, 5000);
+			this.clearTimeoutIfStringPresent(prevProps.errorMessage);
+			this.clearTimeoutERROR = setTimeout(this.handleErrorClear, 5000);
 		}
 		if (this.props.notification !== prevProps.notification && this.props.notification) {
-			setTimeout(this.handleNotificationClear, 5000);
+			this.clearTimeoutIfStringPresent(prevProps.notification, 'NOTIF');
+			this.clearTimeoutNOTIF = setTimeout(this.handleNotificationClear, 5000);
 		}
 	}
 

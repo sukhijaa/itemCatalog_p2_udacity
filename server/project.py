@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session as login_session
 from sqlalchemy import create_engine, asc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from catalogDBSetup import Category, CatalogItem, Base, User
 import random
 import string
@@ -20,10 +20,12 @@ app = Flask(__name__)
 engine = create_engine('sqlite:///itemCatalog.db')
 Base.metadata.bind = engine
 
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
-
+session = scoped_session(sessionmaker(bind=engine))
 allCatsCached = []
+
+@app.teardown_request
+def remove_session(ex=None):
+    session.remove()
 
 
 def getCatalogItemJson(catalogItem):

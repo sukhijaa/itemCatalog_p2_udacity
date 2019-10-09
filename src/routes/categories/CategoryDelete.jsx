@@ -15,14 +15,15 @@ export default class CategoryDelete extends React.Component {
 	};
 
 	handleCategoryUpdate = () => {
-		HTTP.DELETE(buildURL(APIEndpoints.DELETE_CATEGORY, {categoryId: this.selectedCategory.id})).then(res => {
-			this.props.dispatch(removeCategory(this.selectedCategory.id));
-			this.props.dispatch(setNOtificationMessage(`Deleted Category : "${this.selectedCategory.name}"`));
+		const selectedCategory = {...this.selectedCategory};
+		HTTP.DELETE(buildURL(APIEndpoints.DELETE_CATEGORY, {categoryId: selectedCategory.id})).then(res => {
+			this.props.dispatch(removeCategory(selectedCategory.id));
+			this.props.dispatch(setNOtificationMessage(`Deleted Category : "${selectedCategory.name}"`));
 			this.props.history.push('/');
 			this.props.history.goForward();
 		}).catch((err) => {
 			this.props.dispatch(performUserOperationsOnServerFailure(err));
-			this.props.dispatch(setErrorMessage(`Failed to delete Category : ${this.selectedCategory.name} \n\nError Message: ${getErrorMessageOutOfErrorObj(err)}`));
+			this.props.dispatch(setErrorMessage(`Failed to delete Category : ${selectedCategory.name} \n\nError Message: ${getErrorMessageOutOfErrorObj(err)}`));
 		});
 	};
 

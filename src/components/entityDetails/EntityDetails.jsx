@@ -7,7 +7,7 @@ import CategoryDetails from '../../routes/categories/CategoryDetails';
 import './EntityDetails.scss';
 
 @connect(store => ({
-	categories: store.categories || [],
+	categories: store.categories || {},
 	isLoggedIn: store.loginData.isLoggedIn,
 }))
 export default class EntityDetails extends React.Component {
@@ -17,7 +17,7 @@ export default class EntityDetails extends React.Component {
     };
 
     static defaultProps = {
-    	categories: [],
+    	categories: {},
     };
 
     constructor(props) {
@@ -28,7 +28,7 @@ export default class EntityDetails extends React.Component {
     }
 
     componentDidMount() {
-    	if (!this.props.categories.length) {
+    	if (!Object.keys(this.props.categories || {}).length) {
     		addAllCategories(this.props.dispatch);
     	}
     }

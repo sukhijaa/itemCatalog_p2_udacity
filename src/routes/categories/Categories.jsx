@@ -39,6 +39,9 @@ export default class Categories extends React.Component {
 			finalArray = Object.keys(categories || {}).map(id => categories[id]);
 		}
 
+		const getName = (a) => (a.name || '').toLowerCase();
+		finalArray.sort((a, b) => getName(a).localeCompare(getName(b)));
+
 		return finalArray;
 	};
 
@@ -62,7 +65,7 @@ export default class Categories extends React.Component {
 								key={groupValue + itemToRender.id}
 								categoryItem={itemToRender}
 								category={itemToRender.category || ''}
-								expandable={!!itemToRender.catalogItems}
+								expandable={true}
 								linkPrefix={groupValue === GROUPING_OPTIONS[0].value ? 'category' : 'item'}/>
 						);
 					})
