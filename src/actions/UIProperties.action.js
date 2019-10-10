@@ -5,7 +5,7 @@ export const UIPropertiesActionTypes = {
 	COLLAPSE_GROUP: 'collapseGroup',
 	SET_ERROR_MESSAGE: 'errorMsg',
 	SET_NOTIFICATION_MESSAGE: 'notifMsg',
-	SET_USER_IMAGE: 'setUserImg'
+	SET_USER_IMAGE: 'setUserImg',
 };
 
 export const changeSortingOrder = (newSortOrder) => {

@@ -6,7 +6,7 @@ const defaultState = {
 	expandedGroups: {},
 	errorMessage: '',
 	notificationMessage: '',
-	userImageURL: ''
+	userImageURL: '',
 };
 
 export default (state = defaultState, action = {}) => {

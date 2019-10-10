@@ -1,7 +1,7 @@
 module.exports = {
 	"settings": {
 		"react": {
-			"version": "16.4"
+			"version": "16.9"
 		}
 	},
 

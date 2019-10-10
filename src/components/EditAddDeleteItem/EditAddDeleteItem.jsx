@@ -75,39 +75,34 @@ export default class EditAddDeleteItem extends React.PureComponent {
     				categoryDisabled ? null :
     					<div className='eadiw-category-dd'>
     						<div className='eadiw-label'>Category Selected :</div>
-    						<Dropdown
-	options={categoriesDD}
-	value={newCategory}
-	onChange={this.updateCategory}/>
+    						<Dropdown options={categoriesDD}
+    							value={newCategory}
+    							onChange={this.updateCategory}/>
     					</div>
     			}
     			<div className='eadiw-item-name-wrapper'>
     				<div className='eadiw-label'>Name :</div>
-    				<input
-	type='text'
-	value={newName}
+    				<input type='text'
+    					value={newName}
     					onChange={this.updateName}
-	placeholder='Enter Title'
+    					placeholder='Enter Title'
     					disabled={itemNameDisabled}/>
     			</div>
     			<div className='eadiw-item-name-wrapper'>
     				<div className='eadiw-label'>Description :</div>
-    				<textarea
-    					type='text'
-	value={newDescription}
-	onChange={this.updateDesc}
-	placeholder='Enter Description'
-	disabled={itemDescriptionDisabled}/>
+    				<textarea type='text'
+    					value={newDescription}
+    					onChange={this.updateDesc}
+    					placeholder='Enter Description'
+    					disabled={itemDescriptionDisabled}/>
     			</div>
     			<div className='eadiw-submit-button'>
-    				<input
-    					type='button'
-	onClick={this.handleFormSubmit}
-	value={submitButtonTitle}/>
-    				<input
-    					type='button'
-	onClick={goBackFunction}
-	value='Cancel'/>
+    				<input type='button'
+    					onClick={this.handleFormSubmit}
+    					value={submitButtonTitle}/>
+    				<input type='button'
+    					onClick={goBackFunction}
+    					value='Cancel'/>
     			</div>
     		</div>
     	);

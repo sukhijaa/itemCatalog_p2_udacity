@@ -27,11 +27,10 @@ export default class CategoryCreateNew extends React.Component {
 
     	return (
     		<div className='category-edit-wrapper'>
-    			<EditAddDeleteItem
-	categoryDisabled={true}
-	goBackFunction={history.goBack}
-	submitButtonTitle='Add'
-	submitForm={this.handleCategoryUpdate}/>
+    			<EditAddDeleteItem categoryDisabled={true}
+    				goBackFunction={history.goBack}
+    				submitButtonTitle='Add'
+    				submitForm={this.handleCategoryUpdate}/>
     		</div>
     	);
     }

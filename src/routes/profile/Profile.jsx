@@ -47,18 +47,16 @@ export default class Profile extends React.Component {
                     Welcome {username}, Update your Profile Here
     			</div>
     			<div className='login-form-wrapper'>
-    				<input
-	type='text'
-	className='login-form-input-box'
-	placeholder='username' 
-	onChange={this.updateUsername}
+    				<input type='text'
+    					className='login-form-input-box' 
+    					placeholder='username'
+    					onChange={this.updateUsername}
     					value={this.state.username}/>
-    				<input
-    					type='password'
-	className='login-form-input-box'
-	placeholder='Password'
-	onChange={this.updatePaasowrd}
-	value={this.state.password}/>
+    				<input type='password'
+    					className='login-form-input-box'
+    					placeholder='Password'
+    					onChange={this.updatePaasowrd}
+    					value={this.state.password}/>
     				<div className={`login-form-login-button ${notDisabled ? 'login-enabled' : ''}`} onClick={this.handleInfoUpdate}>Update</div>
     			</div>
     		</div>

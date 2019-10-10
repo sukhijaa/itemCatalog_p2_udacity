@@ -39,12 +39,11 @@ export default class CatalogItemNew extends React.Component {
 
     	return (
     		<div className='catalog-item-edit-wrapper'>
-    			<EditAddDeleteItem
-	categoriesDD={allCategories}
-	selectedCategory={categoryId}
-	submitButtonTitle='Add'
-	submitForm={this.handleItemUpdate}
-	goBackFunction={history.goBack}/>
+    			<EditAddDeleteItem categoriesDD={allCategories} 
+    				selectedCategory={categoryId}
+    				submitButtonTitle='Add'
+    				submitForm={this.handleItemUpdate}
+    				goBackFunction={history.goBack}/>
     		</div>
     	);
     }

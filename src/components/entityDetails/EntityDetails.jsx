@@ -99,10 +99,9 @@ export default class EntityDetails extends React.Component {
     								Object.keys(currentEntity.catalogItems || {}).map(itemId => {
     									const item = currentEntity.catalogItems[itemId];
     									return (
-    										<CategoryDetails
-	categoryItem={item}
-	expandable={false}
-	linkPrefix='item'/>
+    										<CategoryDetails categoryItem={item}
+    											expandable={false} 
+    											linkPrefix='item'/>
     									);
     								})
     							}
