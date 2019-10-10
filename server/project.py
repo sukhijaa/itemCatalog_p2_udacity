@@ -3,13 +3,14 @@ import json
 import random
 import requests
 import string
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session as login_session
+from flask import Flask, render_template, request, redirect, jsonify, url_for
 from flask import make_response
 from flask_httpauth import HTTPBasicAuth
 from oauth2client.client import FlowExchangeError
 from oauth2client.client import flow_from_clientsecrets
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.exc import SQLAlchemyError
 
 from catalogDBSetup import Category, CatalogItem, Base, User
 
@@ -59,7 +60,8 @@ def fillCatTableData():
             'id': category.id,
             'catalogItems': []
         }
-        allItemsForThisCat = session.query(CatalogItem).filter(CatalogItem.categoryId == category.id)
+        allItemsForThisCat = session.query(CatalogItem).filter(
+            CatalogItem.categoryId == category.id)
         for catItem in allItemsForThisCat:
             categoryObj['catalogItems'].append({
                 'name': catItem.name,
@@ -87,18 +89,21 @@ def loginUser(provider):
         # STEP 2 - Exchange for a token
         try:
             # Upgrade the authorization code into a credentials object
-            oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+            oauth_flow = flow_from_clientsecrets(
+                'client_secrets.json', scope='')
             oauth_flow.redirect_uri = 'postmessage'
             credentials = oauth_flow.step2_exchange(auth_code)
         except FlowExchangeError as e:
             print(str(e))
-            response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+            response = make_response(
+                json.dumps('Failed to upgrade the authorization code.'), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
 
         # Check that the access token is valid.
         access_token = credentials.access_token
-        url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+        url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?'
+               'access_token=%s' % access_token)
         h = httplib2.Http()
         result = json.loads(h.request(url, 'GET')[1])
         # If there was an error in the access token info, abort.
@@ -127,11 +132,12 @@ def loginUser(provider):
                 user = User(username=name, picture=picture, email=email)
                 session.add(user)
                 session.commit()
-        except:
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps(
+                    'Error occured while performing DB operations. %s'
+                    % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -149,7 +155,8 @@ def loginUser(provider):
         if email is None or password is None:
             print("Missing Arguments")
             return jsonify('Missing Arguments. '
-                           'Please enter a valid email and password. Password is greater than 6 chars.'), 400
+                           'Please enter a valid email and password. '
+                           'Password is greater than 6 chars.'), 400
 
         try:
             if session.query(User).filter_by(email=email).first() is not None:
@@ -157,7 +164,8 @@ def loginUser(provider):
                 user = session.query(User).filter_by(email=email).first()
                 if not user.verify_password(password):
                     print('Invalid Username / Password for %s' % email)
-                    return jsonify('Email Id and Password don\'t match. Please try again.'), 445
+                    return jsonify('Email Id and Password don\'t match. '
+                                   'Please try again.'), 445
                 else:
                     messageToSend = 'Login Successful. Enjoy!!'
                     print('Login successful')
@@ -167,18 +175,21 @@ def loginUser(provider):
                 user.hash_password(password)
                 session.add(user)
                 session.commit()
-                messageToSend = 'Created a new User. Please update your name in Profile Section'
+                messageToSend = 'Created a new User. ' \
+                                'Please update your name in Profile Section'
                 print('User created successfully')
-        except:
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
-        
         token = user.generate_auth_token(600)
-        return jsonify({'token': token.decode('ascii'), 'message': messageToSend, 'username': user.username})
+        return jsonify({
+            'token': token.decode('ascii'),
+            'message': messageToSend,
+            'username': user.username})
     else:
         return 'Unrecoginized Provider'
 
@@ -190,7 +201,8 @@ def updateUserInfo():
     reqData = reqData['body']
     userEditing = User.verify_auth_token(token)
     if userEditing is None:
-        response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+        response = make_response(
+            json.dumps('Bad Authorization Token. Please re-login'), 444)
         response.headers['Content-Type'] = 'application/json'
         return response
     print(reqData)
@@ -198,7 +210,9 @@ def updateUserInfo():
     try:
         user = session.query(User).filter_by(id=userEditing).first()
         if user is None:
-            response = make_response(json.dumps('User not found. Please re-login or Create a New User'), 444)
+            response = make_response(
+                json.dumps('User not found. '
+                           'Please re-login or Create a New User'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         if reqData['username']:
@@ -207,11 +221,11 @@ def updateUserInfo():
             user.hash_password(reqData['password'])
         session.add(user)
         session.commit()
-    except:
+    except SQLAlchemyError:
         print("Oops!", sys.exc_info()[0], "occured.")
         response = make_response(
-            json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-            , 500)
+            json.dumps('Error occured while performing DB operations. %s'
+                       % str(sys.exc_info()[0])), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
     print('User info Updated')
@@ -228,31 +242,37 @@ def newItemInCategory():
         reqData = reqData['body']
         userEditing = User.verify_auth_token(token)
         if userEditing is None:
-            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response = make_response(
+                json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
 
         try:
-            category = session.query(Category).filter_by(id=reqData['categoryId']).one()
+            category = session.query(Category).\
+                filter_by(id=reqData['categoryId']).one()
             if category:
                 print('Trying to create a new item now')
-                newItem = CatalogItem(name=reqData['name'], description=reqData['description'],
-                                      categoryId=category.id)
+                newItem = CatalogItem(
+                    name=reqData['name'],
+                    description=reqData['description'],
+                    categoryId=category.id)
                 newItem.category = category
                 session.add(newItem)
                 session.commit()
                 fillCatTableData()
                 return getCatalogItemJson(newItem)
             else:
-                response = make_response(json.dumps('Category Not Found. Please select a valid category'), 401)
+                response = make_response(
+                    json.dumps('Category Not Found. '
+                               'Please select a valid category'), 401)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-        except:
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -267,20 +287,22 @@ def addCategory():
         reqData = reqData['body']
         userEditing = User.verify_auth_token(token)
         if userEditing is None:
-            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response = make_response(
+                json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
 
         try:
-            newCategory = Category(name=reqData['name'], description=reqData['description'])
+            newCategory = Category(
+                name=reqData['name'], description=reqData['description'])
             session.add(newCategory)
             session.commit()
-        except:
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
         fillCatTableData()
@@ -297,25 +319,28 @@ def editCategory(category_id):
         reqData = reqData['body']
         userEditing = User.verify_auth_token(token)
         if userEditing is None:
-            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response = make_response(
+                json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
 
         try:
-            categoryToEdit = session.query(Category).filter_by(id=category_id).one()
+            categoryToEdit = session.query(Category).\
+                filter_by(id=category_id).one()
             if reqData['name']:
                 categoryToEdit.name = reqData['name']
             if reqData['description']:
                 categoryToEdit.description = reqData['description']
             session.add(categoryToEdit)
             session.commit()
-            categoryAfterEdit = session.query(Category).filter_by(id=category_id).one()
-        except:
+            categoryAfterEdit = session.query(Category).\
+                filter_by(id=category_id).one()
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -333,7 +358,8 @@ def editItem(item_id):
         reqData = reqData['body']
         userEditing = User.verify_auth_token(token)
         if userEditing is None:
-            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response = make_response(
+                json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
@@ -346,12 +372,13 @@ def editItem(item_id):
                 itemToEdit.description = reqData['description']
             session.add(itemToEdit)
             session.commit()
-            itemAfterEdit = session.query(CatalogItem).filter_by(id=item_id).one()
-        except:
+            itemAfterEdit = session.query(CatalogItem).\
+                filter_by(id=item_id).one()
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
         fillCatTableData()
@@ -367,23 +394,26 @@ def deleteCategoryAndItsItems(category_id):
         token = reqData['token']
         userEditing = User.verify_auth_token(token)
         if userEditing is None:
-            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response = make_response(
+                json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         try:
-            categoryToDelete = session.query(Category).filter_by(id=category_id).one()
-            itemsForCategory = session.query(CatalogItem).filter(CatalogItem.categoryId == categoryToDelete.id)
+            categoryToDelete = session.query(Category).\
+                filter_by(id=category_id).one()
+            itemsForCategory = session.query(CatalogItem).\
+                filter(CatalogItem.categoryId == categoryToDelete.id)
             for item in itemsForCategory:
                 session.delete(item)
                 session.commit()
 
             session.delete(categoryToDelete)
             session.commit()
-        except:
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -400,18 +430,20 @@ def deleteSingleCatalogItem(item_id):
         token = reqData['token']
         userEditing = User.verify_auth_token(token)
         if userEditing is None:
-            response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
+            response = make_response(
+                json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
         try:
-            itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
+            itemToDelete = session.query(CatalogItem)\
+                .filter_by(id=item_id).one()
             session.delete(itemToDelete)
             session.commit()
-        except:
+        except SQLAlchemyError:
             print("Oops!", sys.exc_info()[0], "occured.")
             response = make_response(
-                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
-                , 500)
+                json.dumps('Error occured while performing DB operations. %s'
+                           % str(sys.exc_info()[0])), 500)
             response.headers['Content-Type'] = 'application/json'
             return response
 
