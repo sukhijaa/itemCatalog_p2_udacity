@@ -38,6 +38,7 @@ export default class CategoryEdit extends React.Component {
 			<div className='category-edit-wrapper'>
 				<EditAddDeleteItem
 					selectedCategory={this.selectedCategory.name}
+					creatorId={this.selectedCategory.creator}
 					categoryDisabled={true}
 					itemName={this.selectedCategory.name}
 					itemDescription={this.selectedCategory.description}

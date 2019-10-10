@@ -2,7 +2,7 @@ import random
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from catalogDBSetup import Category, CatalogItem, Base
+from catalogDBSetup import Category, CatalogItem, Base, User
 
 engine = create_engine('sqlite:///itemCatalog.db')
 # Bind the engine to the metadata of the Base class so that the
@@ -21,15 +21,28 @@ session = DBSession()
 
 cats = ['Sports', 'Mechanical Tools', 'Books', 'Groceries', 'Electronics']
 
+myUser = User(username='Admin User', email='root@itemCatalog')
+myUser.hash_password('rootuser')
+session.add(myUser)
+session.commit()
+
 for category in cats:
-    catDescription = "This category takes care of all the items that are related to " + category
-    dbCatEntry = Category(name=category, description=catDescription)
+    catDescription = "This category takes care of all " \
+                     "the items that are related to " + category
+    dbCatEntry = Category(
+        name=category,
+        description=catDescription,
+        creator=myUser)
     session.add(dbCatEntry)
     session.commit()
     for i in range(random.randint(10, 20)):
         itemName = category + " - Item " + str(i)
         itemDescription = "This item belongs to category " + category
-        dbItemEntry = CatalogItem(name=itemName, description=itemDescription, category=dbCatEntry)
+        dbItemEntry = CatalogItem(
+            name=itemName,
+            description=itemDescription,
+            category=dbCatEntry,
+            creator=myUser)
         session.add(dbItemEntry)
         session.commit()
 

@@ -8,6 +8,7 @@ import {collapseGroup, expandGroup} from '../../actions/UIProperties.action';
 @connect(store => ({
 	expandedGroups: store.uiProperties.expandedGroups,
 	isLoggedIn: store.loginData.isLoggedIn,
+	userId: store.loginData.userId
 }))
 export default class CategoryDetails extends React.Component {
 	static propTypes = {
@@ -40,8 +41,9 @@ export default class CategoryDetails extends React.Component {
 	};
 
 	render() {
-		const {categoryItem, linkPrefix, category, expandable, expandedGroups, isLoggedIn} = this.props;
+		const {categoryItem, linkPrefix, category, expandable, expandedGroups, isLoggedIn, userId} = this.props;
 		const currentStatus = expandable ? expandedGroups[categoryItem.id] : false;
+		const isOwner = categoryItem.creator === userId;
 		return (
 			<div className='category-detail-wrapper'>
 				<div className='category-detail-row-wrapper'>
@@ -69,7 +71,7 @@ export default class CategoryDetails extends React.Component {
 							: null
 					}
 					{
-						isLoggedIn ?
+						isOwner && isLoggedIn ?
 							<React.Fragment>
 								<div className='category-item-edit-link'>
 									<Link to={`/${linkPrefix}/${categoryItem.id}/edit`}>Edit</Link>
@@ -91,6 +93,7 @@ export default class CategoryDetails extends React.Component {
 											key={itemId}
 											categoryItem={item}
 											isLoggedIn={isLoggedIn}
+											userId={userId}
 											expandable={false}
 											linkPrefix='item'/>
 									);

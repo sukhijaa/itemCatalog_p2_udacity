@@ -23,7 +23,7 @@ export default class Login extends  React.Component {
 		accessObj.grantOfflineAccess().then(codeObj => {
 			HTTP.POST(APIEndpoints.LOG_USER_IN, {access_token: codeObj.code}).then(res => {
 				console.log(res);
-				this.props.dispatch(logUserIn(res.data.token, (accessObj.profileObj || {}).name || 'User'));
+				this.props.dispatch(logUserIn(res.data.token, (accessObj.profileObj || {}).name || 'User', res.data.userId));
 			    this.props.dispatch(setNOtificationMessage(`Welcome ${(accessObj.profileObj || {}).name || 'User'}, You are logged in`));
 				this.props.history.goBack();
 			}).catch(this.onLoginFailure);
@@ -41,7 +41,7 @@ export default class Login extends  React.Component {
 	handleLoginClick = () => {
 		const {email, password} = this.state;
 		HTTP.POST(APIEndpoints.LOG_USER_CREDENTIALS, {email, password}, false).then(res => {
-			this.props.dispatch(logUserIn(res.data.token, res.data.username));
+			this.props.dispatch(logUserIn(res.data.token, res.data.username, res.data.userId));
 			this.props.dispatch(setNOtificationMessage(res.data.message || `Welcome ${res.data.username}`));
 			this.props.history.goBack();
 		}).catch(this.onLoginFailure);

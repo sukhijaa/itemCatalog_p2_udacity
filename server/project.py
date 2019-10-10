@@ -36,7 +36,8 @@ def getCatalogItemJson(catalogItem):
         'name': catalogItem.name,
         'description': catalogItem.description,
         'categoryId': catalogItem.categoryId,
-        'id': catalogItem.id
+        'id': catalogItem.id,
+        'creator': catalogItem.creator_id
     })
 
 
@@ -44,7 +45,8 @@ def getCategoryJson(category):
     return jsonify({
         'name': category.name,
         'description': category.description,
-        'id': category.id
+        'id': category.id,
+        'creator': category.creator_id
     })
 
 
@@ -58,7 +60,8 @@ def fillCatTableData():
             'name': category.name,
             'description': category.description,
             'id': category.id,
-            'catalogItems': []
+            'catalogItems': [],
+            'creator': category.creator_id
         }
         allItemsForThisCat = session.query(CatalogItem).filter(
             CatalogItem.categoryId == category.id)
@@ -67,7 +70,8 @@ def fillCatTableData():
                 'name': catItem.name,
                 'description': catItem.description,
                 'id': catItem.id,
-                'categoryId': catItem.categoryId
+                'categoryId': catItem.categoryId,
+                'creator': catItem.creator_id
             })
         allCatsCached.append(categoryObj)
 
@@ -145,7 +149,7 @@ def loginUser(provider):
         token = user.generate_auth_token(6000)
 
         # STEP 5 - Send back token to the client
-        return jsonify({'token': token.decode('ascii')})
+        return jsonify({'token': token.decode('ascii'), 'userId': user.id})
 
         # return jsonify({'token': token.decode('ascii'), 'duration': 6000})
     elif provider == 'userInput':
@@ -189,6 +193,7 @@ def loginUser(provider):
         return jsonify({
             'token': token.decode('ascii'),
             'message': messageToSend,
+            'userId': user.id,
             'username': user.username})
     else:
         return 'Unrecoginized Provider'
@@ -251,12 +256,14 @@ def newItemInCategory():
         try:
             category = session.query(Category).\
                 filter_by(id=reqData['categoryId']).one()
+            user = session.query(User).filter_by(id=userEditing).one()
             if category:
                 print('Trying to create a new item now')
                 newItem = CatalogItem(
                     name=reqData['name'],
                     description=reqData['description'],
-                    categoryId=category.id)
+                    categoryId=category.id,
+                    creator=user)
                 newItem.category = category
                 session.add(newItem)
                 session.commit()
@@ -294,8 +301,11 @@ def addCategory():
         print(reqData)
 
         try:
+            user = session.query(User).filter_by(id=userEditing).one()
             newCategory = Category(
-                name=reqData['name'], description=reqData['description'])
+                name=reqData['name'],
+                description=reqData['description'],
+                creator=user)
             session.add(newCategory)
             session.commit()
         except SQLAlchemyError:
@@ -328,6 +338,13 @@ def editCategory(category_id):
         try:
             categoryToEdit = session.query(Category).\
                 filter_by(id=category_id).one()
+
+            if categoryToEdit.creator_id != userEditing:
+                response = make_response(json.dumps(
+                    'Only owner is allowed to edit this category'), 401)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+
             if reqData['name']:
                 categoryToEdit.name = reqData['name']
             if reqData['description']:
@@ -366,6 +383,13 @@ def editItem(item_id):
 
         try:
             itemToEdit = session.query(CatalogItem).filter_by(id=item_id).one()
+
+            if itemToEdit.creator_id != userEditing:
+                response = make_response(json.dumps(
+                    'Only owner is allowed to edit this item'), 401)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+
             if reqData['name']:
                 itemToEdit.name = reqData['name']
             if reqData['description']:
@@ -401,6 +425,13 @@ def deleteCategoryAndItsItems(category_id):
         try:
             categoryToDelete = session.query(Category).\
                 filter_by(id=category_id).one()
+
+            if categoryToDelete.creator_id != userEditing:
+                response = make_response(json.dumps(
+                    'Only owner is allowed to delete this category'), 401)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+
             itemsForCategory = session.query(CatalogItem).\
                 filter(CatalogItem.categoryId == categoryToDelete.id)
             for item in itemsForCategory:
@@ -437,6 +468,12 @@ def deleteSingleCatalogItem(item_id):
         try:
             itemToDelete = session.query(CatalogItem)\
                 .filter_by(id=item_id).one()
+
+            if itemToDelete.creator_id != userEditing:
+                response = make_response(json.dumps(
+                    'Only owner is allowed to delete this item'), 401)
+                response.headers['Content-Type'] = 'application/json'
+                return response
             session.delete(itemToDelete)
             session.commit()
         except SQLAlchemyError:

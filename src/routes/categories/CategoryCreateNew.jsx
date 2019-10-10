@@ -7,7 +7,10 @@ import {setErrorMessage, setNOtificationMessage} from '../../actions/UIPropertie
 import {performUserOperationsOnServerFailure} from '../../actions/Login.actions';
 import {getErrorMessageOutOfErrorObj} from './Categories.utils';
 
-@connect(store => ({categories: store.categories}))
+@connect(store => ({
+	categories: store.categories,
+	userId: store.loginData.userId,
+}))
 export default class CategoryCreateNew extends React.Component {
 
     handleCategoryUpdate = (newCat, name, description) => {
@@ -23,11 +26,12 @@ export default class CategoryCreateNew extends React.Component {
     };
 
     render() {
-    	const {history} = this.props;
+    	const {history, userId} = this.props;
 
     	return (
     		<div className='category-edit-wrapper'>
     			<EditAddDeleteItem categoryDisabled={true}
+    				creatorId={userId}
     				goBackFunction={history.goBack}
     				submitButtonTitle='Add'
     				submitForm={this.handleCategoryUpdate}/>

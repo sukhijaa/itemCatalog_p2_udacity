@@ -9,14 +9,15 @@ const isUserLoggedIn = () => {
 const defaultState = {
 	isLoggedIn: isUserLoggedIn(),
 	userName: sessionStorage.userName || 'Dummy',
+	userId: parseInt(sessionStorage.userId) || '',
 };
 
 export default (state = defaultState, action = {}) => {
 	switch (action.type) {
 		case LoginActionTypes.LOG_USER_IN:
-			return {...state, isLoggedIn: true, userName: action.payload.username};
+			return {...state, isLoggedIn: true, userName: action.payload.username, userId: parseInt(action.payload.userId)};
 		case LoginActionTypes.LOG_USER_OUT:
-			return {...state, isLoggedIn: false, userName: ''};
+			return {...state, isLoggedIn: false, userName: '', userId: ''};
 		case CategoryActionTypes.ADD_CATEGORY:
 		case CategoryActionTypes.ADD_ITEM_TO_CATEGORY:
 		case CategoryActionTypes.EDIT_CATEGORY:

@@ -9,6 +9,7 @@ import {performUserOperationsOnServerFailure} from '../../actions/Login.actions'
 
 @connect(store => ({
 	categories: store.categories,
+	userId: store.loginData.userId,
 }))
 export default class CatalogItemNew extends React.Component {
 
@@ -29,7 +30,7 @@ export default class CatalogItemNew extends React.Component {
     };
 
     render() {
-    	const {categories, history, location} = this.props;
+    	const {categories, history, location, userId} = this.props;
 
     	const queryParams = location.search ? location.search.split('catalogId=') : [];
     	let categoryId = queryParams.length >= 2 ? queryParams[1] : '';
@@ -39,7 +40,8 @@ export default class CatalogItemNew extends React.Component {
 
     	return (
     		<div className='catalog-item-edit-wrapper'>
-    			<EditAddDeleteItem categoriesDD={allCategories} 
+    			<EditAddDeleteItem categoriesDD={allCategories}
+    				creatorId={userId}
     				selectedCategory={categoryId}
     				submitButtonTitle='Add'
     				submitForm={this.handleItemUpdate}

@@ -9,6 +9,7 @@ import {logUserIn, performUserOperationsOnServerFailure} from '../../actions/Log
 
 @connect(store => ({
 	username: store.loginData.userName,
+	userId: store.loginData.userId,
 }))
 export default class Profile extends React.Component {
 
@@ -29,7 +30,7 @@ export default class Profile extends React.Component {
     	HTTP.POST(APIEndpoints.UPDATE_PROFILE_INFO, {username, password: password}).then(res => {
     		console.log(res.data);
     		this.props.dispatch(setNOtificationMessage('User info updated successfully'));
-    		this.props.dispatch(logUserIn(sessionStorage.token, username));
+    		this.props.dispatch(logUserIn(sessionStorage.token, username, this.props.userId));
     	}).catch(err => {
     	    this.props.dispatch(performUserOperationsOnServerFailure(err));
     		const errorMessage = getErrorMessageOutOfErrorObj(err);

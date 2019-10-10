@@ -47,6 +47,7 @@ export default class CatalogItemDelete extends React.Component {
 			<div className='catalog-item-edit-wrapper'>
 				<EditAddDeleteItem
 					categoriesDD={getAllCategoriesForDD(categories)}
+					creatorId={this.selectedItem.creator}
 					selectedCategory={this.selectedCategory.id + ''}
 					categoryDisabled={true}
 					itemDescription={this.selectedItem.description}

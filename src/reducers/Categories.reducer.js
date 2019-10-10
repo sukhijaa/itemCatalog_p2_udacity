@@ -13,7 +13,7 @@ export default (state = {}, action = {}) => {
 			const allCategories = {...state};
 			const catToAdd = action.payload || null;
 			if (catToAdd) {
-				allCategories[catToAdd.id] = catToAdd;
+				allCategories[catToAdd.id] = {...catToAdd, creator: parseInt(sessionStorage.userId)};
 				return allCategories;
 			} 
 			return state;
@@ -25,7 +25,7 @@ export default (state = {}, action = {}) => {
 			const allCategories = {...state};
 			const selectedCat = allCategories[categoryId];
 			selectedCat.catalogItems = selectedCat.catalogItems || {};
-			selectedCat.catalogItems[itemToAdd.id] = itemToAdd;
+			selectedCat.catalogItems[itemToAdd.id] = {...itemToAdd, creator: parseInt(sessionStorage.userId)};
 			allCategories[categoryId] = {...selectedCat};
 			return allCategories;
 		}

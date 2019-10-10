@@ -1,9 +1,13 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import './EditAddDeleteItem.scss';
 
+@connect(store => ({
+	userId: store.loginData.userId,
+}))
 export default class EditAddDeleteItem extends React.PureComponent {
     static propTypes = {
     	categoriesDD: PropTypes.array,
@@ -16,6 +20,7 @@ export default class EditAddDeleteItem extends React.PureComponent {
     	submitForm: PropTypes.func,
     	submitButtonTitle: PropTypes.string,
     	goBackFunction: PropTypes.func,
+    	creatorId: PropTypes.number,
     };
 
     static defaultProps = {
@@ -29,6 +34,7 @@ export default class EditAddDeleteItem extends React.PureComponent {
     	submitButtonTitle: 'Save',
     	submitForm: () => {},
     	goBackFunction: () => {},
+    	creatorId: -1,
     };
 
     constructor(props) {
@@ -41,7 +47,7 @@ export default class EditAddDeleteItem extends React.PureComponent {
     	};
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps) {
     	const setStateForProp = (stateName, stateVal) => this.setState({[stateName]: stateVal});
 
     	if (this.props.itemName !== prevProps.itemName) {
@@ -67,10 +73,17 @@ export default class EditAddDeleteItem extends React.PureComponent {
 
     render() {
     	const {categoriesDD, categoryDisabled, itemNameDisabled,
-    		itemDescriptionDisabled, submitButtonTitle, goBackFunction} = this.props;
+    		itemDescriptionDisabled, submitButtonTitle, goBackFunction, creatorId, userId} = this.props;
     	const {newCategory, newName, newDescription} = this.state;
+    	const isOwner = userId === creatorId;
     	return (
     		<div className='edit-add-delete-item-wrapper'>
+    			{
+    				!isOwner  ?
+    					<div className='eadiw-current-user-owner'>
+							You are not the owner of this entry
+    					</div> : null
+    			}
     			{
     				categoryDisabled ? null :
     					<div className='eadiw-category-dd'>
@@ -97,9 +110,13 @@ export default class EditAddDeleteItem extends React.PureComponent {
     					disabled={itemDescriptionDisabled}/>
     			</div>
     			<div className='eadiw-submit-button'>
-    				<input type='button'
-    					onClick={this.handleFormSubmit}
-    					value={submitButtonTitle}/>
+    				{
+    					isOwner ?
+    						<input type='button'
+    							onClick={this.handleFormSubmit}
+    							value={submitButtonTitle}/>
+    						: null
+    				}
     				<input type='button'
     					onClick={goBackFunction}
     					value='Cancel'/>

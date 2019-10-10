@@ -42,6 +42,7 @@ export default class CategoryDelete extends React.Component {
 				<EditAddDeleteItem
 					selectedCategory={this.selectedCategory.name}
 					categoryDisabled={true}
+					creatorId={this.selectedCategory.creator}
 					itemName={this.selectedCategory.name}
 					itemNameDisabled={true}
 					itemDescription={this.selectedCategory.description}
