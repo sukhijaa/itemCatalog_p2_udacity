@@ -32,6 +32,8 @@ def remove_session(ex=None):
 
 
 def getCatalogItemJson(catalogItem):
+    """This is a utility method designed to get the json
+    serialization of a catalog item"""
     return jsonify({
         'name': catalogItem.name,
         'description': catalogItem.description,
@@ -42,6 +44,8 @@ def getCatalogItemJson(catalogItem):
 
 
 def getCategoryJson(category):
+    """This is a utility method designed to get
+    the json serialization of a category"""
     return jsonify({
         'name': category.name,
         'description': category.description,
@@ -52,6 +56,9 @@ def getCategoryJson(category):
 
 # Utility Method. It queries the DB and creates an array of dictionaries
 def fillCatTableData():
+    """This is a utility method designed to get
+        the json serialization of all category which
+        contains catalog items within them"""
     global allCatsCached
     allCatsFromCatTable = session.query(Category).all()
     allCatsCached = []
@@ -84,6 +91,9 @@ def getCategoriesData():
 
 @app.route('/loginUser/<provider>', methods=['POST'])
 def loginUser(provider):
+    """Handler for Loggin a user in
+    Provider could be google or userInput
+    """
     # STEP 1 - Parse the auth code
     requestData = json.loads(request.data)
     requestData = requestData['body']
@@ -201,6 +211,9 @@ def loginUser(provider):
 
 @app.route('/profile/update', methods=['POST'])
 def updateUserInfo():
+    """
+    Its a API call handler to update the user profile
+    """
     reqData = json.loads(request.data)
     token = reqData['token']
     reqData = reqData['body']
@@ -239,6 +252,9 @@ def updateUserInfo():
 
 @app.route('/item/new', methods=['GET', 'POST'])
 def newItemInCategory():
+    """
+    API handler to add a new item in DB
+    """
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
@@ -286,6 +302,7 @@ def newItemInCategory():
 
 @app.route('/category/new', methods=['GET', 'POST'])
 def addCategory():
+    """API handler to add a new Category"""
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
@@ -321,6 +338,7 @@ def addCategory():
 
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
+    """API handler to edit a particular category"""
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
@@ -367,6 +385,7 @@ def editCategory(category_id):
 
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(item_id):
+    """API handler to edit the item"""
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     elif request.method == 'POST':
@@ -411,6 +430,8 @@ def editItem(item_id):
 
 @app.route('/category/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategoryAndItsItems(category_id):
+    """API handler to delete a category and
+    all items associated with this category"""
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     else:
@@ -454,6 +475,9 @@ def deleteCategoryAndItsItems(category_id):
 
 @app.route('/item/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteSingleCatalogItem(item_id):
+    """
+    API handler to delete a single item
+    """
     if request.method == 'GET':
         return render_template('index.html', categoryData=getCategoriesData())
     else:
@@ -490,6 +514,9 @@ def deleteSingleCatalogItem(item_id):
 
 @app.route('/getAllCategories')
 def returnJSONOfAllCatsAndItems():
+    """
+    Returns a pretty json of all categories and items for each category
+    """
     return jsonify(getCategoriesData())
 
 
