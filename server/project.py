@@ -83,7 +83,7 @@ def loginUser(provider):
     requestData = requestData['body']
     if provider == 'google':
         auth_code = requestData['access_token']
-        print "Step 1 - Complete, received auth code %s" % auth_code
+        print("Step 1 - Complete, received auth code %s" % auth_code)
         # STEP 2 - Exchange for a token
         try:
             # Upgrade the authorization code into a credentials object
@@ -108,9 +108,8 @@ def loginUser(provider):
             response = make_response(json.dumps(result.get('error')), 500)
             response.headers['Content-Type'] = 'application/json'
 
-        print "Step 2 Complete! Access Token : %s " % credentials.access_token
+        print("Step 2 Complete! Access Token : %s " % credentials.access_token)
 
-        h = httplib2.Http()
         userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
         params = {'access_token': credentials.access_token, 'alt': 'json'}
         answer = requests.get(userinfo_url, params=params)
@@ -122,11 +121,19 @@ def loginUser(provider):
         email = data['email']
 
         # see if user exists, if it doesn't make a new one
-        user = session.query(User).filter_by(email=email).first()
-        if not user:
-            user = User(username=name, picture=picture, email=email)
-            session.add(user)
-            session.commit()
+        try:
+            user = session.query(User).filter_by(email=email).first()
+            if not user:
+                user = User(username=name, picture=picture, email=email)
+                session.add(user)
+                session.commit()
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
 
         # STEP 4 - Make token
         token = user.generate_auth_token(6000)
@@ -140,27 +147,36 @@ def loginUser(provider):
         password = requestData['password']
 
         if email is None or password is None:
-            print "Missing Arguments"
+            print("Missing Arguments")
             return jsonify('Missing Arguments. '
                            'Please enter a valid email and password. Password is greater than 6 chars.'), 400
 
-        if session.query(User).filter_by(email=email).first() is not None:
-            print "existing user"
-            user = session.query(User).filter_by(email=email).first()
-            if not user.verify_password(password):
-                print('Invalid Username / Password for %s' % email)
-                return jsonify('Email Id and Password don\'t match. Please try again.'), 445
+        try:
+            if session.query(User).filter_by(email=email).first() is not None:
+                print("existing user")
+                user = session.query(User).filter_by(email=email).first()
+                if not user.verify_password(password):
+                    print('Invalid Username / Password for %s' % email)
+                    return jsonify('Email Id and Password don\'t match. Please try again.'), 445
+                else:
+                    messageToSend = 'Login Successful. Enjoy!!'
+                    print('Login successful')
             else:
-                messageToSend = 'Login Successful. Enjoy!!'
-                print('Login successful')
-        else:
-            print('Creating a new user : %s' % email)
-            user = User(email=email, username=email)
-            user.hash_password(password)
-            session.add(user)
-            session.commit()
-            messageToSend = 'Created a new User. Please update your name in Profile Section'
-            print('User created successfully')
+                print('Creating a new user : %s' % email)
+                user = User(email=email, username=email)
+                user.hash_password(password)
+                session.add(user)
+                session.commit()
+                messageToSend = 'Created a new User. Please update your name in Profile Section'
+                print('User created successfully')
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+        
         token = user.generate_auth_token(600)
         return jsonify({'token': token.decode('ascii'), 'message': messageToSend, 'username': user.username})
     else:
@@ -178,17 +194,26 @@ def updateUserInfo():
         response.headers['Content-Type'] = 'application/json'
         return response
     print(reqData)
-    user = session.query(User).filter_by(id=userEditing).first()
-    if user is None:
-        response = make_response(json.dumps('User not found. Please re-login or Create a New User'), 444)
+
+    try:
+        user = session.query(User).filter_by(id=userEditing).first()
+        if user is None:
+            response = make_response(json.dumps('User not found. Please re-login or Create a New User'), 444)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+        if reqData['username']:
+            user.username = reqData['username']
+        if reqData['password']:
+            user.hash_password(reqData['password'])
+        session.add(user)
+        session.commit()
+    except:
+        print("Oops!", sys.exc_info()[0], "occured.")
+        response = make_response(
+            json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+            , 500)
         response.headers['Content-Type'] = 'application/json'
         return response
-    if reqData['username']:
-        user.username = reqData['username']
-    if reqData['password']:
-        user.hash_password(reqData['password'])
-    session.add(user)
-    session.commit()
     print('User info Updated')
     return 'User info updated successfully'
 
@@ -207,16 +232,29 @@ def newItemInCategory():
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
-        category = session.query(Category).filter_by(id=reqData['categoryId']).one()
-        if category:
-            print('Trying to create a new item now')
-            newItem = CatalogItem(name=reqData['name'], description=reqData['description'],
-                                  categoryId=category.id)
-            newItem.category = category
-            session.add(newItem)
-            session.commit()
-            fillCatTableData()
-            return getCatalogItemJson(newItem)
+
+        try:
+            category = session.query(Category).filter_by(id=reqData['categoryId']).one()
+            if category:
+                print('Trying to create a new item now')
+                newItem = CatalogItem(name=reqData['name'], description=reqData['description'],
+                                      categoryId=category.id)
+                newItem.category = category
+                session.add(newItem)
+                session.commit()
+                fillCatTableData()
+                return getCatalogItemJson(newItem)
+            else:
+                response = make_response(json.dumps('Category Not Found. Please select a valid category'), 401)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
 
 
 @app.route('/category/new', methods=['GET', 'POST'])
@@ -233,9 +271,18 @@ def addCategory():
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
-        newCategory = Category(name=reqData['name'], description=reqData['description'])
-        session.add(newCategory)
-        session.commit()
+
+        try:
+            newCategory = Category(name=reqData['name'], description=reqData['description'])
+            session.add(newCategory)
+            session.commit()
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         fillCatTableData()
         return getCategoryJson(newCategory)
 
@@ -254,14 +301,24 @@ def editCategory(category_id):
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
-        categoryToEdit = session.query(Category).filter_by(id=category_id).one()
-        if reqData['name']:
-            categoryToEdit.name = reqData['name']
-        if reqData['description']:
-            categoryToEdit.description = reqData['description']
-        session.add(categoryToEdit)
-        session.commit()
-        categoryAfterEdit = session.query(Category).filter_by(id=category_id).one()
+
+        try:
+            categoryToEdit = session.query(Category).filter_by(id=category_id).one()
+            if reqData['name']:
+                categoryToEdit.name = reqData['name']
+            if reqData['description']:
+                categoryToEdit.description = reqData['description']
+            session.add(categoryToEdit)
+            session.commit()
+            categoryAfterEdit = session.query(Category).filter_by(id=category_id).one()
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+
         fillCatTableData()
         return getCategoryJson(categoryAfterEdit)
 
@@ -280,14 +337,23 @@ def editItem(item_id):
             response.headers['Content-Type'] = 'application/json'
             return response
         print(reqData)
-        itemToEdit = session.query(CatalogItem).filter_by(id=item_id).one()
-        if reqData['name']:
-            itemToEdit.name = reqData['name']
-        if reqData['description']:
-            itemToEdit.description = reqData['description']
-        session.add(itemToEdit)
-        session.commit()
-        itemAfterEdit = session.query(CatalogItem).filter_by(id=item_id).one()
+
+        try:
+            itemToEdit = session.query(CatalogItem).filter_by(id=item_id).one()
+            if reqData['name']:
+                itemToEdit.name = reqData['name']
+            if reqData['description']:
+                itemToEdit.description = reqData['description']
+            session.add(itemToEdit)
+            session.commit()
+            itemAfterEdit = session.query(CatalogItem).filter_by(id=item_id).one()
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
         fillCatTableData()
         return getCatalogItemJson(itemAfterEdit)
 
@@ -304,14 +370,23 @@ def deleteCategoryAndItsItems(category_id):
             response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
-        categoryToDelete = session.query(Category).filter_by(id=category_id).one()
-        itemsForCategory = session.query(CatalogItem).filter(CatalogItem.categoryId == categoryToDelete.id)
-        for item in itemsForCategory:
-            session.delete(item)
-            session.commit()
+        try:
+            categoryToDelete = session.query(Category).filter_by(id=category_id).one()
+            itemsForCategory = session.query(CatalogItem).filter(CatalogItem.categoryId == categoryToDelete.id)
+            for item in itemsForCategory:
+                session.delete(item)
+                session.commit()
 
-        session.delete(categoryToDelete)
-        session.commit()
+            session.delete(categoryToDelete)
+            session.commit()
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+
         fillCatTableData()
         return {}
 
@@ -328,9 +403,18 @@ def deleteSingleCatalogItem(item_id):
             response = make_response(json.dumps('Bad Authorization Token. Please re-login'), 444)
             response.headers['Content-Type'] = 'application/json'
             return response
-        itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
-        session.delete(itemToDelete)
-        session.commit()
+        try:
+            itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
+            session.delete(itemToDelete)
+            session.commit()
+        except:
+            print("Oops!", sys.exc_info()[0], "occured.")
+            response = make_response(
+                json.dumps('Error occured while performing DB operations. %s' % str(sys.exc_info()[0]))
+                , 500)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+
         fillCatTableData()
         return {}
 
