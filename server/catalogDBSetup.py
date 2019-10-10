@@ -1,13 +1,15 @@
+import random
+import string
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from passlib.apps import custom_app_context as pwd_context
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import create_engine
-from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
-import random, string
 
 Base = declarative_base()
 secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+
 
 class Category(Base):
     __tablename__ = 'categories'
@@ -44,6 +46,7 @@ class CatalogItem(Base):
             'id': self.id,
             'categoryId': self.category_id,
         }
+
 
 class User(Base):
     __tablename__ = 'user'
