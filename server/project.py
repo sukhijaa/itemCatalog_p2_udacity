@@ -127,12 +127,12 @@ def loginUser(provider):
             session.commit()
 
         # STEP 4 - Make token
-        token = user.generate_auth_token(600)
+        token = user.generate_auth_token(6000)
 
         # STEP 5 - Send back token to the client
         return jsonify({'token': token.decode('ascii')})
 
-        # return jsonify({'token': token.decode('ascii'), 'duration': 600})
+        # return jsonify({'token': token.decode('ascii'), 'duration': 6000})
     elif provider == 'userInput':
         email = requestData['email']
         password = requestData['password']
