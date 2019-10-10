@@ -33,4 +33,4 @@ for category in cats:
         session.add(dbItemEntry)
         session.commit()
 
-print "added menu items!"
+print("added menu items!")
