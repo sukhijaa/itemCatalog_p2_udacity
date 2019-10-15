@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 secret_key = ''.join(
-    random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    random.choice(string.ascii_uppercase + string.digits) for x in range(32))
 
 
 class User(Base):
